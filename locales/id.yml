@@ -395,7 +395,7 @@ language_switch_success: Preferensi bahasa untuk {} telah diperbarui ke {}
 language_switch_success_pm: Preferensi bahasa Anda telah diperbarui ke {}
 language_not_supported: "{} belum didukung!"
 language_code_not_valid: Itu bukan kode bahasa yang valid. Gunakan kode ISO yang diterima secara internasional!
-language_current_locale: "Lokal saat ini untuk obrolan ini adalah: *{}*"
+language_current_locale: "Lokasi saat ini untuk obrolan ini adalah: *{}*"
 language_select_language: "*Pilih bahasa*\n"
 language_user_language: "Bahasa pengguna: `{}`\n\nBantu kami membawa lebih banyak bahasa ke bot dengan berkontribusi pada proyek di [Crowdin] (https://crowdin.com/project/haruka)!"
 language_chat_language: "\nBahasa obrolan yang terhubung: `{}`"
@@ -403,14 +403,14 @@ language_sel_user_lang: "*\n\nPilih bahasa pengguna baru: *"
 #Locks
 modname_locks: Kunci
 locks_list_title: "Kunci: "
-locks_lock_success: Pesan-pesan `{}` Terkunci bagi semua yang non-admin!
+locks_lock_success: Pesan `{}` Terkunci bagi semua yang non-admin!
 locks_unlock_success: Membuka pesan `{}` untuk semua orang!
 locks_type_invalid: Apa yang kamu coba kunci...? Coba /locktypes untuk daftar apa saja yang bisa dikunci.
 locks_bot_not_admin: Pastikan saya adalah administrator grup dan memiliki izin untuk menghapus pesan, lalu coba lagi.
 locks_lock_no_type: Anda belum menentukan tipe yang akan dikunci.
 lokcs_unlock_no_type: Anda belum menentukan tipe yang akan dibuka kuncinya.
 locks_lock_bots_no_admin: Saya melihat bot, dan saya diberitahu untuk menghentikan mereka untuk bergabung... tapi saya bukan admin!
-locks_lock_bots_kick: Hanya admin yang diizinkan menambahkan bot ke obrolan ini! Mengeluarkan!
+locks_lock_bots_kick: Hanya admin yang diizinkan menambahkan bot ke obrolan ini! Keluar!
 locks_list_empty: Tidak ada yang dikunci saat ini di *{}*.
 locks_list: |
   Ini adalah yang dikunci di *{}*:
