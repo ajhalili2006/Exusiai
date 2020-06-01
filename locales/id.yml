@@ -349,7 +349,7 @@ feds_demote_success: Keluar dari sini!
 feds_demote_failed: Menurunkan pangkat gagal!
 feds_info: |
   <b> ℹ️ Informasi Federasi:</b>
-  FedID: <code>{}</code>
+  IDFed: <code>{}</code>
   Nama: {}
   Pembuat: {}
   Semua Admin: <code>{}</code>
@@ -362,9 +362,9 @@ feds_help: |
   Tetapi kemudian Anda memiliki banyak grup, dan Anda tidak ingin spammer ini berada di salah satu grup Anda - bagaimana Anda bisa mengatasinya? Apakah Anda harus memblokirnya secara manual, di semua grup Anda?
 
   Tidak lagi! Dengan Federasi, Anda dapat membuat larangan dalam satu obrolan tumpang tindih dengan semua obrolan lainnya.
-  Anda bahkan dapat menetapkan federasi admin, sehingga admin tepercaya Anda dapat mencekal semua obrolan yang ingin Anda lindungi.
+  Anda bahkan dapat menetapkan admin federasi, sehingga admin yang anda percaya dapat mencekal semua obrolan yang ingin Anda lindungi.
 
-  Masih tahap percobaan, membuat Federasi hanya bisa dilakukan oleh pembuat saya
+  Masih dalam tahap percobaan, membuat Federasi hanya bisa dilakukan oleh pembuatku
 
   Perintah:
   - /newfed <fedname>: buat Federasi baru dengan nama yang diberikan. Pengguna hanya diizinkan memiliki satu Federasi. Metode ini juga dapat digunakan untuk mengganti nama Federasi. (maks. 64 karakter)
@@ -372,8 +372,8 @@ feds_help: |
   - /fedinfo <FedID>: informasi tentang Federasi yang ditentukan.
   - /joinfed <FedID>: gabung dengan obrolan saat ini ke Federasi. Hanya pemilik obrolan yang dapat melakukan ini. Setiap obrolan hanya bisa dalam satu Federasi.
   - /leavefed <FedID>: keluar dari Federasi yang diikuti. Hanya pemilik obrolan yang dapat melakukan ini.
-  - /fpromote <user>: promosikan Pengguna untuk memberi admin yang diumpankan. Pemilik Fed saja.
-  - /fdemote <user>: menjatuhkan Pengguna dari admin Federasi ke Pengguna normal. Pemilik Fed saja.
+  - /fpromote <user>: promosikan Pengguna untuk menjadi admin federasi. Pemilik Fed saja.
+  - /fdemote <user>: menurunkan Pengguna dari admin Federasi ke Pengguna normal. Pemilik Fed saja.
   - /fban <user>: melarang pengguna dari semua federasi tempat obrolan ini berlangsung, dan pelaksana memiliki kendali atas.
   - /unfban <user>: batalkan Pengguna dari semua federasi tempat obrolan ini berlangsung, dan bahwa pelaksana memiliki kendali atas.
   - /setfrules: Mengatur aturan Federasi.
