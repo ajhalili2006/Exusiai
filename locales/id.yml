@@ -431,7 +431,6 @@ locks_list: |
     - pesan = `{}`
     - media = `{}`
     - lainnya = `{}`
-    - tinjauan = `{}`
     - semua = `{}`
 locks_help: |
   Apakah stiker mengganggu Anda? atau ingin menghindari orang lain membagikan tautan? atau gambar? Anda berada di tempat yang tepat!\n
@@ -466,7 +465,7 @@ log_channel_help: |
   - mengirim /setlog di saluran
   - meneruskan /setlog ke grup
 #Memes and etc.
-modname_memes: Meme dan lain-lain.
+modname_memes: Meme
 memes_no_message: Saya perlu pesan untuk meme.
 memes_deepfry_nothing: Apa yang harus saya lakukan dengan ini?!
 memes_shout_notext: Di mana teksnya?
@@ -598,7 +597,7 @@ memes_slaps_templates_list:
   - "{user1} mendorong dengan perlahan {user2} untuk berenang di dalam lahar."
 memes_items_list:
   - "wajan besi cor"
-  - "trout besar"
+  - "ikan trout besar"
   - "tongkat pemukul baseball"
   - "tongkat pemukul kriket"
   - "tongkat kayu"
@@ -619,9 +618,9 @@ memes_items_list:
   - "ikan forel pelangi"
   - "ayam karet"
   - "alat pemukul berduri"
-  - "pemadam Api"
-  - "batu yang berat"
-  - "potongan tanah"
+  - "pemadam api"
+  - "batu besar"
+  - "segenggam lumpur"
   - "sarang lebah"
   - "sepotong daging busuk"
   - "beruang"
@@ -884,10 +883,10 @@ translator_animal_lang:
   - Apa ini?
   - Hah?
   - Aduh!
-  - Mari main!
+  - Ayo main!
   - Ini menyenangkan!
   - Aku benar-benar takut padamu.
-  - Saya akan kencing!
+  - Aku pen kencing!
   - kaMu BaU.
 #URL Blacklist
 modname_urlblacklist: Daftar Hitam Domain
