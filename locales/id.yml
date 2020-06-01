@@ -287,14 +287,14 @@ cust_filters_err_wrong_filter: Itu bukan filter aktif - jalankan /filters untuk 
 cust_filters_err_protocol: Anda tampaknya mencoba menggunakan protokol url yang tidak didukung. Telegram tidak mendukung tombol untuk beberapa protokol, seperti tg://. Silakan coba lagi atau minta bantuan di @HarukaAyaGroup.
 cust_filters_err_badformat: Filter ini tidak dapat dikirim, karena tidak memakai format dengan benar. Tanyakan di @HarukaAyaGroup jika Anda tidak tahu mengapa!
 cust_filters_chatsettings_stats: Ada `{}` filter khusus di sini.
-cust_filters_cleanup_success: "{} filter dari obrolan ini telah dihapus."
+cust_filters_cleanup_success: "Filter {} dari obrolan ini telah dihapus."
 cust_filters_help: |
   Jadikan obrolan Anda lebih hidup dengan filter; Bot akan membalas kata-kata tertentu!
   Filter tidak peka huruf besar-kecil; setiap kali seseorang mengatakan kata-kata pemicu Anda, {} akan membalas sesuatu yang lain! dapat digunakan untuk membuat perintah Anda sendiri, jika diinginkan.
   - /filters: daftarkan semua filter aktif dalam obrolan ini.
   *Hanya admin:*
   - /filter <keyword> <reply message>: Setiap kali seseorang mengatakan "suatu kata", bot akan membalas dengan "kalimat". Untuk beberapa filter kata, kutip kata pertama.
-  - /stop <filter keyword>: hentikan filter itu.\n
+  - /stop <filter keyword>: hentikan filter.\n
   Contoh cara mengatur filter akan melalui:
   `/filter halo Halo! Bagaimana kabarmu?
   Filter multi kata dapat diatur melalui:
@@ -303,7 +303,7 @@ cust_filters_help: |
   `/filter word`, sambil membalas stiker atau data apa pun yang Anda inginkan. Sekarang, setiap kali seseorang menyebut "kata", stiker itu akan dikirim sebagai balasan.
   Sekarang, siapa pun yang mengatakan "halo" akan dijawab dengan "Halo, apa kabar?".
 #Disable
-modname_disable: Perintah Dinonaktifkan
+modname_disable: Menonaktifkan
 disable_success: Menonaktifkan penggunaan `{}`
 disable_err_undisableable: Perintah itu tidak dapat dinonaktifkan
 disable_err_no_cmd: Lewati perintah sebagai argumen.
@@ -320,7 +320,7 @@ disable_help: |
   - /cmds: periksa status saat ini dari perintah yang dinonaktifkan\n
   *Hanya admin:*
   - /enable <cmd name>: Mengaktifkan perintah
-  - /disable <cmd name>: Nonaktifkan perintah
+  - /disable <cmd name>: Menonaktifkan perintah
 #Feds
 modname_feds: Federasi
 feds_create_fail: Pembuatan federasi gagal! Tanyakan pada @HarukaAyaGroup untuk bantuan.
@@ -335,7 +335,7 @@ feds_group_not_in_fed: Grup ini tidak ada dalam federasi apa pun!
 feds_group_part_of_fed: "Obrolan ini adalah bagian dari federasi berikut:"
 feds_group_joined_fed: Eh, apakah Anda akan bergabung dengan dua federasi dalam satu obrolan?
 feds_fedid_invalid: Silakan masukkan ID Federasi yang valid.
-feds_join_unknown_err: Gagal bergabung ke federasi karena kesalahan yang tidak diketahui, minta bantuan di @HarukaAyaGroup.
+feds_join_unknown_err: Gagal bergabung ke federasi karena kesalahan yang tidak diketahui, tanyakan ini di @HarukaAyaGroup.
 feds_join_success: Obrolan bergabung dengan federasi!
 feds_leave_success: "Obrolan ini telah meninggalkan federasi: {}!"
 feds_leave_not_joined: Bagaimana Anda bisa meninggalkan federasi yang tidak pernah Anda ikuti?!
