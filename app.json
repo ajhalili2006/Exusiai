@@ -1,0 +1,85 @@
+{
+  "name": "Tomoe",
+  "description": "Telegram's sassiest group manager. Modular Telegram group management bot!",
+  "keywords": [
+    "telegram",
+    "best",
+    "group",
+    "manager",
+    "3"
+  ],
+  "repository": "https://github.com/Dank-del/HarukaAya",
+  "env": {
+    "env": {
+      "description": "Setting this to ANYTHING will enable env variables",
+      "value": "ANYTHING"
+    },
+      "api_key": {
+      "description": "get it from my.telegram.org",
+      "value": ""
+    },
+      "api_hash": {
+      "description": "get it from my.telegram.org",
+      "value": ""
+    },
+      "sw_api": {
+      "description": "get it from simon",
+      "value": ""
+    },
+      "del_cmds": {
+      "description": "delet cmd",
+      "value": "False"
+    },
+      "strict_antispam": {
+      "description": "hmm",
+      "value": "False"
+    },
+      "workers": {
+      "description": "hmm",
+      "value": "4"    
+    },
+    "bot_token": {
+      "description": "Your bot token, as a string.",
+      "value": ""
+    },
+    "owner_id": {
+      "description": "An integer of consisting of your owner ID",
+      "value": "686021814"
+    },
+    "owner_username": {
+      "description": "Your username",
+      "value": "TheDarkW3b"
+    },
+    "URL": {
+      "description": "The Heroku App URL similar to https://<appname>.herokuapp.com/",
+      "value": ""
+    },
+    "message_dump": {
+      "description": "optional: a chat where your replied saved messages are stored, to stop people deleting their old",
+      "value": "-349749825"
+    },
+    "sudo_users": {
+      "description": "A space separated list of user_ids which should be considered sudo users",
+      "value": "686021814"
+    },
+    "support_users": {
+      "description": "A space separated list of user_ids which should be considered support users (can gban/ungban, nothing else)",
+      "value": "686021814"
+    },
+    "whitelist_users": {
+      "description": "A space separated list of user_ids which should be considered whitelisted - they can't be banned.",
+      "value": "686021814"
+    },
+     "is_example_config_or_not": {
+      "description": " Please edit this line to "not_sample_anymore" to make the bot run",
+      "value": "not_sample_anymore"
+   },
+  "addons": [
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "9.5"
+      }
+    }
+  ]
+}
