@@ -73,13 +73,6 @@
      "is_example_config_or_not": {
       "description": " Please edit this line to "not_sample_anymore" to make the bot run",
       "value": "not_sample_anymore"
-   },
-  "addons": [
-    {
-      "plan": "heroku-postgresql",
-      "options": {
-        "version": "9.5"
-      }
     }
   ]
 }
