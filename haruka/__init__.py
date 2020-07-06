@@ -86,6 +86,7 @@ if ENV:
     ALLOW_EXCL = os.environ.get('ALLOW_EXCL', False)
     API_KEY = os.environ.get('API_ID', None)
     API_HASH = os.environ.get('API_HASH', None)
+    DEEPFRY_TOKEN = os.environ.get('DEEPFRY_TOKEN', None)
     spamwatch_api = os.environ.get('sw_api', None)
 
 else:
@@ -131,6 +132,7 @@ else:
     WORKERS = Config.WORKERS
     BAN_STICKER = Config.BAN_STICKER
     ALLOW_EXCL = Config.ALLOW_EXCL
+    DEEPFRY_TOKEN = Config.DEEPFRY_TOKEN
     spamwatch_api = Config.spamwatch_api
 
 SUDO_USERS.add(OWNER_ID)
