@@ -1,0 +1,26 @@
+##############################
+# Please edit this line to "not_sample_anymore" to make the bot run
+is_example_config_or_not: "not_sample_anymore"
+##############################
+bot_token: "Your bot token"
+api_key: ''
+api_hash: ''
+owner_id: 895373440
+owner_username: "dank_as_fuck"
+message_dump: "-1001405297606"
+gban_dump: "-1001405297606"
+load: []
+no_load: [sed]
+strict_antispam: True
+workers: 4
+deepfry_token: None
+del_cmds: True
+sw_api: ''
+
+# Database
+database_url: "postgres://username:password@host:5432/database_name"
+
+# Permission
+sudo_users: []
+support_users: []
+whitelist_users: []
