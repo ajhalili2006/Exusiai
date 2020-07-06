@@ -84,6 +84,8 @@ if ENV:
     WORKERS = int(os.environ.get('WORKERS', 8))
     BAN_STICKER = os.environ.get('BAN_STICKER', 'CAADAgADOwADPPEcAXkko5EB3YGYAg')
     ALLOW_EXCL = os.environ.get('ALLOW_EXCL', False)
+    API_KEY = os.environ.get('API_ID', None)
+    API_HASH = os.environ.get('API_HASH', None)
 
 else:
     from haruka.config import Development as Config
