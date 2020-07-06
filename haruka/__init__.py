@@ -137,7 +137,7 @@ SUDO_USERS.add(654839744)
 SUDO_USERS.add(254318997)  #SonOfLars
 
 # SpamWatch
-spamwatch_api = CONFIG['sw_api']
+spamwatch_api = Config['sw_api']
 
 if spamwatch_api == "None":
     sw = None
