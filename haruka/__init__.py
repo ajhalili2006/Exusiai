@@ -17,6 +17,7 @@
 
 import logging
 import sys
+import os
 import yaml
 import spamwatch
 
@@ -38,70 +39,95 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 8:
         "You MUST have a python version of at least 3.8! Multiple features depend on this. Bot quitting."
     )
     quit(1)
+    
+ENV = bool(os.environ.get('ENV', False))
 
-# Load config
-try:
-    CONFIG = yaml.load(open('config.yml', 'r'), Loader=yaml.SafeLoader)
-except FileNotFoundError:
-    print("Are you dumb? C'mon start using your brain!")
-    quit(1)
-except Exception as eee:
-    print(
-        f"Ah, look like there's error(s) while trying to load your config. It is\n!!!! ERROR BELOW !!!!\n {eee} \n !!! ERROR END !!!"
-    )
-    quit(1)
+if ENV:
+    TOKEN = os.environ.get('TOKEN', None)
 
-if not CONFIG['is_example_config_or_not'] == "not_sample_anymore":
-    print("Please, use your eyes and stop being blinded.")
-    quit(1)
+    try:
+        OWNER_ID = int(os.environ.get('OWNER_ID', None))
+    except ValueError:
+        raise Exception("Your OWNER_ID env variable is not a valid integer.")
 
-TOKEN = CONFIG['bot_token']
-API_KEY = CONFIG['api_key']
-API_HASH = CONFIG['api_hash']
+    MESSAGE_DUMP = os.environ.get('MESSAGE_DUMP', None)
+    OWNER_USERNAME = os.environ.get("OWNER_USERNAME", None)
 
-try:
-    OWNER_ID = int(CONFIG['owner_id'])
-except ValueError:
-    raise Exception("Your 'owner_id' variable is not a valid integer.")
+    try:
+        SUDO_USERS = set(int(x) for x in os.environ.get("SUDO_USERS", "").split())
+        DEV_USERS = set(int(x) for x in os.environ.get("DEV_USERS", "").split())
+    except ValueError:
+        raise Exception("Your sudo or dev users list does not contain valid integers.")
 
-try:
-    MESSAGE_DUMP = CONFIG['message_dump']
-except ValueError:
-    raise Exception("Your 'message_dump' must be set.")
+    try:
+        SUPPORT_USERS = set(int(x) for x in os.environ.get("SUPPORT_USERS", "").split())
+    except ValueError:
+        raise Exception("Your support users list does not contain valid integers.")
 
-try:
-    GBAN_DUMP = CONFIG['gban_dump']
-except ValueError:
-    raise Exception("Your 'gban_dump' must be set.")
+    try:
+        WHITELIST_USERS = set(int(x) for x in os.environ.get("WHITELIST_USERS", "").split())
+    except ValueError:
+        raise Exception("Your whitelisted users list does not contain valid integers.")
 
-try:
-    OWNER_USERNAME = CONFIG['owner_username']
-except ValueError:
-    raise Exception("Your 'owner_username' must be set.")
+    GBAN_LOGS = os.environ.get('GBAN_LOGS', None)
+    WEBHOOK = bool(os.environ.get('WEBHOOK', False))
+    URL = os.environ.get('URL', "")  # Does not contain token
+    PORT = int(os.environ.get('PORT', 5000))
+    CERT_PATH = os.environ.get("CERT_PATH")
 
-try:
-    SUDO_USERS = set(int(x) for x in CONFIG['sudo_users'] or [])
-except ValueError:
-    raise Exception("Your sudo users list does not contain valid integers.")
+    DB_URI = os.environ.get('DATABASE_URL')
+    DONATION_LINK = os.environ.get('DONATION_LINK')
+    LOAD = os.environ.get("LOAD", "").split()
+    NO_LOAD = os.environ.get("NO_LOAD", "translation").split()
+    DEL_CMDS = bool(os.environ.get('DEL_CMDS', False))
+    STRICT_ANTISPAM = bool(os.environ.get('STRICT_ANTISPAM', False))
+    WORKERS = int(os.environ.get('WORKERS', 8))
+    BAN_STICKER = os.environ.get('BAN_STICKER', 'CAADAgADOwADPPEcAXkko5EB3YGYAg')
+    ALLOW_EXCL = os.environ.get('ALLOW_EXCL', False)
 
-try:
-    SUPPORT_USERS = set(int(x) for x in CONFIG['support_users'] or [])
-except ValueError:
-    raise Exception("Your support users list does not contain valid integers.")
+else:
+    from haruka.config import Development as Config
+    TOKEN = Config.API_KEY
 
-try:
-    WHITELIST_USERS = set(int(x) for x in CONFIG['whitelist_users'] or [])
-except ValueError:
-    raise Exception(
-        "Your whitelisted users list does not contain valid integers.")
+    try:
+        OWNER_ID = int(Config.OWNER_ID)
+    except ValueError:
+        raise Exception("Your OWNER_ID variable is not a valid integer.")
 
-DB_URI = CONFIG['database_url']
-LOAD = CONFIG['load']
-NO_LOAD = CONFIG['no_load']
-DEL_CMDS = CONFIG['del_cmds']
-STRICT_ANTISPAM = CONFIG['strict_antispam']
-WORKERS = CONFIG['workers']
-DEEPFRY_TOKEN = CONFIG['deepfry_token']
+    MESSAGE_DUMP = Config.MESSAGE_DUMP
+    OWNER_USERNAME = Config.OWNER_USERNAME
+
+    try:
+        SUDO_USERS = set(int(x) for x in Config.SUDO_USERS or [])
+        DEV_USERS = set(int(x) for x in Config.DEV_USERS or [])
+    except ValueError:
+        raise Exception("Your sudo or dev users list does not contain valid integers.")
+
+    try:
+        SUPPORT_USERS = set(int(x) for x in Config.SUPPORT_USERS or [])
+    except ValueError:
+        raise Exception("Your support users list does not contain valid integers.")
+
+    try:
+        WHITELIST_USERS = set(int(x) for x in Config.WHITELIST_USERS or [])
+    except ValueError:
+        raise Exception("Your whitelisted users list does not contain valid integers.")
+        
+    GBAN_LOGS = Config.GBAN_LOGS
+    WEBHOOK = Config.WEBHOOK
+    URL = Config.URL
+    PORT = Config.PORT
+    CERT_PATH = Config.CERT_PATH
+
+    DB_URI = Config.SQLALCHEMY_DATABASE_URI
+    DONATION_LINK = Config.DONATION_LINK
+    LOAD = Config.LOAD
+    NO_LOAD = Config.NO_LOAD
+    DEL_CMDS = Config.DEL_CMDS
+    STRICT_ANTISPAM = Config.STRICT_ANTISPAM
+    WORKERS = Config.WORKERS
+    BAN_STICKER = Config.BAN_STICKER
+    ALLOW_EXCL = Config.ALLOW_EXCL
 
 SUDO_USERS.add(OWNER_ID)
 
