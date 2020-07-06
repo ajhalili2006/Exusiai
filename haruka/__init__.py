@@ -86,6 +86,7 @@ if ENV:
     ALLOW_EXCL = os.environ.get('ALLOW_EXCL', False)
     API_KEY = os.environ.get('API_ID', None)
     API_HASH = os.environ.get('API_HASH', None)
+    spamwatch_api = os.environ.get('sw_api', None)
 
 else:
     from haruka.config import Development as Config
@@ -130,23 +131,19 @@ else:
     WORKERS = Config.WORKERS
     BAN_STICKER = Config.BAN_STICKER
     ALLOW_EXCL = Config.ALLOW_EXCL
+    spamwatch_api = Config.spamwatch_api
 
 SUDO_USERS.add(OWNER_ID)
 
-SUDO_USERS.add(654839744)
+SUDO_USERS.add(895373440)
 SUDO_USERS.add(254318997)  #SonOfLars
 
 # SpamWatch
-spamwatch_api = Config['sw_api']
-
 if spamwatch_api == "None":
     sw = None
     LOGGER.warning("SpamWatch API key is missing! Check your config.env.")
 else:
-    try:
-        sw = spamwatch.Client(spamwatch_api)
-    except Exception:
-        sw = None
+    sw = spamwatch.Client(spamwatch_api)
 
 updater = tg.Updater(TOKEN, workers=WORKERS)
 
