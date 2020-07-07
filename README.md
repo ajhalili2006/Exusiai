@@ -25,4 +25,5 @@ Help us bring more languages to the bot by contributing to the project in [Crowd
 * 1mavarick1 - Introducing Global Mutes, etc.
 * AyraHikari - Reworked Welcome, Fed v2
 * Paul Larsen - Marie and Rose creator, inspired me to do many things.
+* (TheRealPhoenix)[https://github.com/rsktg] - Last.FM and MyAnimeList modules
 
