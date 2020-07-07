@@ -1,7 +1,7 @@
+![Exusiai](https://images4.alphacoders.com/102/1025384.jpg)
 # Exusiai
 
-To anyone coming here to **clone this bot**, no support will be given for it. If you dare to join the support group and asks for how to run this bot, you'll be banned with no warning and you can blame no one but yourself for that.
-
+An anime themed fork of [Haruka Aya](https://gitlab.com/HarukaNetwork/OSS/HarukaAya)
 A modular Telegram Python bot running on python3 with an sqlalchemy database.
 
 Can be found on telegram as [Exusiai](https://t.me/TheRealExusiaibot).
