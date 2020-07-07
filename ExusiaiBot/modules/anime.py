@@ -6,7 +6,7 @@ from jikanpy.exceptions import APIException
 from telegram import Message, Chat, User, ParseMode, Update, Bot, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler,  run_async
 
-from tg_bot import dispatcher
+from ExusiaiBot import dispatcher
 
 jikan = Jikan()
 
