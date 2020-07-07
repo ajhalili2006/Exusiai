@@ -27,3 +27,5 @@ tldextract
 wikipedia
 zalgo-text
 covid
+jikanpy
+simplejson
