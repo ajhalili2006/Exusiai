@@ -6,7 +6,6 @@ A modular Telegram Python bot running on python3 with an sqlalchemy database.
 
 Can be found on telegram as [Exusiai](https://t.me/TheRealExusiaibot).
 
-Alternatively, [find me on telegram](https://t.me/RealAkito)! (Keep all support questions in the support chat, where more people can help you.)
 
 You can also join our support group [here!](https://t.me/TheRealExusiaibot)
 (Keep in the mind that we does not support any fork of Exusiai.)
