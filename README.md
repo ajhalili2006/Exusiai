@@ -1,15 +1,15 @@
-# Haruka Aya
+![Exusiai](https://images4.alphacoders.com/102/1025384.jpg)
+# Exusiai
 
-To anyone coming here to **clone this bot**, no support will be given for it. If you dare to join the support group and asks for how to run this bot, you'll be banned with no warning and you can blame no one but yourself for that.
-
+An anime themed fork of [Haruka Aya](https://gitlab.com/HarukaNetwork/OSS/HarukaAya)
 A modular Telegram Python bot running on python3 with an sqlalchemy database.
 
-Can be found on telegram as [Haruka Aya](https://t.me/HarukaAyaBot).
+Can be found on telegram as [Exusiai](https://t.me/TheRealExusiaibot).
 
 Alternatively, [find me on telegram](https://t.me/RealAkito)! (Keep all support questions in the support chat, where more people can help you.)
 
-You can also join our support group [here!](https://t.me/HarukaAyaBot)
-(Keep in the mind that we does not support any fork of Haruka Aya.)
+You can also join our support group [here!](https://t.me/TheRealExusiaibot)
+(Keep in the mind that we does not support any fork of Exusiai.)
 
 Help us bring more languages to the bot by contributing to the project in [Crowdin](https://crowdin.com/project/haruka)!
 
@@ -27,6 +27,3 @@ Help us bring more languages to the bot by contributing to the project in [Crowd
 * AyraHikari - Reworked Welcome, Fed v2
 * Paul Larsen - Marie and Rose creator, inspired me to do many things.
 
-And much more that we couldn't list it here!
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Dank-del/HarukaAya)

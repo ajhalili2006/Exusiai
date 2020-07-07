@@ -19,14 +19,14 @@ btn_help: '❔ Aide'
 btn_go_back: '⬅️ Retour'
 main_start_group: Salut ! Je suis en ligne :3
 main_start_pm: |
-  Salut ! Je m'appelle Haruka Aya - Je suis là pour vous aider à manager vos groupes !
+  Salut ! Je m'appelle Exusiai - Je suis là pour vous aider à manager vos groupes !
   Appuyez sur le bouton d'aide pour obtenir plus d'informations sur comment m'utilisé au maximum de mon potentiel.
 
-  Rejoignez [Groupe Haruka Aya](https://t.me/HarukaAyaGroup) ( @HarukaAyaGroup ) si vous avez besoin d'assistance.
+  Rejoignez [Groupe Exusiai](https://t.me/exusiaisupport) ( @exusiaisupport ) si vous avez besoin d'assistance.
 
-  Suivez [Haruka Aya](https://t.me/HarukaAya) ( @HarukaAya ) si vous souhaitez rester informé des nouveautés, mises à jour et maintenance du bot !
+  Suivez [Exusiai](https://t.me/ExusiaiNews) ( @ExusiaiNews ) si vous souhaitez rester informé des nouveautés, mises à jour et maintenance du bot !
 
-  Fait avec amour par @RealAkito\n\nVous souhaitez m'ajouter à votre group ? [Cliquez ici !](t.me/HarukaAyaBot?startgroup=true)
+  Fait avec amour par @RealAkito\n\nVous souhaitez m'ajouter à votre group ? [Cliquez ici !](t.me/TheRealExusiaibot?startgroup=true)
 main_start_btn_support: '📢 Groupe d''assistance'
 main_start_btn_ctrlpnl: '🛠 Panneau de contrôle'
 main_start_btn_lang: '🇺🇸 Langue'
@@ -168,7 +168,7 @@ antispam_err_wrong_arg: "Donnez moi un argument pour choisir le réglage ! on/of
 antispam_userinfo_gbanned: "Globalement banni (gban) : <b>{}</b>"
 antispam_userinfo_gban_reason: "\nRaison : {}"
 antispam_chatsettings_gban: "Ce tchat utilise le *ban global (gban)* : `{}`."
-anitspam_appeal: \n<b>Réclamation :</b> @HarukaAyaGroup
+anitspam_appeal: \n<b>Réclamation :</b> @exusiaisupport
 antispam_spamwatch_banned: "<b>This user is detected as a spambot by SpamWatch and has been removed!</b>\n\n<b>Reason</b>: {}"
 antispam_help: |
   Le bannissement affecte tous les utilisateurs présents dans les groupes faisant usage de ce bot. Cela permet de vous protéger ainsi que vos groupes en bannissant les spammeurs le plus rapidement possible. Ce paramètre est activé par défault, mais vous pouvez le changer en utilisant cette commande.\n
@@ -286,8 +286,8 @@ cust_filters_add_success: Élément '{}' ajouté dans *{}* !
 cust_filters_list_empty: Il n'y a aucun filtre actif dans {} !
 cust_filters_stop_success: D'accord, j'arrêterai de répondre à ceci dans *{}*.
 cust_filters_err_wrong_filter: Ceci n'est pas un filtre actif - éxécutez /filters pour voir tous les filtres actifs.
-cust_filters_err_protocol: Vous semblez essayer d'utiliser un protocol url non supporté. Telegram ne supporte pas les boutons pour certains protocols tels que tg://. Veuillez éssayer de nouveau, ou demandez de l'aide dans le groupe @HarukaAyaGroup.
-cust_filters_err_badformat: Ce filtre ne peut pas être envoyé car il est incorrectement formaté. Demandez dans le groupe @HarukaAyaGroup si vous ne parvenez pas à comprendre pourquoi !
+cust_filters_err_protocol: Vous semblez essayer d'utiliser un protocol url non supporté. Telegram ne supporte pas les boutons pour certains protocols tels que tg://. Veuillez éssayer de nouveau, ou demandez de l'aide dans le groupe @exusiaisupport.
+cust_filters_err_badformat: Ce filtre ne peut pas être envoyé car il est incorrectement formaté. Demandez dans le groupe @exusiaisupport si vous ne parvenez pas à comprendre pourquoi !
 cust_filters_chatsettings_stats: Il y a `{}` filtres personnalisés ici.
 cust_filters_cleanup_success: "{} filters from this chat have been removed."
 cust_filters_help: |
@@ -325,7 +325,7 @@ disable_help: |
   - /disable <commande> : désactive la <commande>
 #Feds
 modname_feds: Fédérations
-feds_create_fail: La création de fédération a échoué ! Demandez de l'aide dans le groupe @HarukaAyaGroup.
+feds_create_fail: La création de fédération a échoué ! Demandez de l'aide dans le groupe @exusiaisupport.
 feds_create_success: "*Vous avez créé une nouvelle fédération avec succès !*\nNom : `{}`\nID : `{}`\n\nÉxécutez la commande suivante pour les ajouter à cette fédération :\n`/joinfed {}`"
 feds_create_success_logger: "La fédération <b>{}</b> a été créée avec l'ID: <pre>{}</pre>"
 feds_err_no_args: Veuillez écrire le nom la fédération.
@@ -337,7 +337,7 @@ feds_group_not_in_fed: Ce groupe n'est dans aucune fédération !
 feds_group_part_of_fed: "Ce tchat fait parti de la fédération suivante :"
 feds_group_joined_fed: Hum, alliez vous rejoindre deux fédérations avec avec un même tchat ?
 feds_fedid_invalid: Veuillez un ID de fédération valide.
-feds_join_unknown_err: La tentative d'adhésion à la fédération a échoué à cause d'une erreur inconnue, demandez de l'aide dans le groupe @HarukaAyaGroup.
+feds_join_unknown_err: La tentative d'adhésion à la fédération a échoué à cause d'une erreur inconnue, demandez de l'aide dans le groupe @exusiaisupport.
 feds_join_success: Le tchat a rejoint la fédération avec succès !
 feds_leave_success: "Ce tchat à quitté la fédération : {} !"
 feds_leave_not_joined: Comment pourriez vous quitter une fédération que vous n'avez jamais rejoint ?!
@@ -673,7 +673,7 @@ misc_info_is_support: "\nThis person is one of my support users! He can gban tho
 misc_info_is_whitelisted: "\nThis person is a whitelisted user, one rarely gets this role, you can't ban or kick him."
 misc_gdpr: Deleting identifiable data...
 misc_md_list: |
-  Markdown is a very powerful formatting tool supported by telegram. Haruka Aya has some enhancements, to make sure that \
+  Markdown is a very powerful formatting tool supported by telegram. Exusiai has some enhancements, to make sure that \
   saved messages are correctly parsed, and to allow you to create buttons.
   - <code>_italic_</code>: wrapping text with '_' will produce italic text
   - <code>*bold*</code>: wrapping text with '*' will produce bold text
@@ -765,7 +765,7 @@ note_msg_del: "Looks like the original sender of this note has deleted their mes
 note_url_invalid: "The URL of the button is invalid! Please update this note!"
 note_mention_invalid: "Looks like you tried to mention someone I've never seen before. Forward one of their messages to me and I'll be able to tag them!"
 note_incorrect_import: "This note was an incorrectly imported file from another bot - I can't use it. Save it manually if needed. I'll remove it from your notes list."
-note_cannot_send: "This note could not be sent, as it is incorrectly formatted, Please ask in @HarukaAyaGroup if you can't figure out why!"
+note_cannot_send: "This note could not be sent, as it is incorrectly formatted, Please ask in @exusiaisupport if you can't figure out why!"
 get_invalid: "Note name missing! Write the name of the note you want to get."
 note_is_local: "local notes"
 save_invalid: "There's nothing to save!"
