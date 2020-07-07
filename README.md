@@ -27,6 +27,3 @@ Help us bring more languages to the bot by contributing to the project in [Crowd
 * AyraHikari - Reworked Welcome, Fed v2
 * Paul Larsen - Marie and Rose creator, inspired me to do many things.
 
-And much more that we couldn't list it here!
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Dank-del/Exusiai)
