@@ -89,6 +89,7 @@ if ENV:
     DEEPFRY_TOKEN = os.environ.get('DEEPFRY_TOKEN', None)
     spamwatch_api = os.environ.get('sw_api', None)
     LASTFM_API_KEY = os.environ.get('LASTFM_API_KEY', "")
+    MOE_API = os.environ.get('MOE_API', "")
 
 else:
     from ExusiaiBot.config import Development as Config
@@ -136,6 +137,7 @@ else:
     DEEPFRY_TOKEN = Config.DEEPFRY_TOKEN
     spamwatch_api = Config.spamwatch_api
     LASTFM_API_KEY = Config.LASTFM_API_KEY
+    MOE_API = Config.MOE_API
 
 SUDO_USERS.add(OWNER_ID)
 
