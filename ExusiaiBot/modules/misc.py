@@ -19,6 +19,7 @@ import html
 import wikipedia
 import re
 import time
+import speedtest
 from datetime import datetime
 from subprocess import Popen, PIPE
 from typing import Optional, List
@@ -476,6 +477,47 @@ def ping(bot: Bot, update: Update):
     end_time = time.time()
     ping_time = round((end_time - start_time)*1000, 3)
     update.effective_message.reply_text("*Pong!!!*\n`{}ms`".format(ping_time), parse_mode=ParseMode.MARKDOWN)
+    
+@run_async
+def sudo_list(bot: Bot, update: Update):
+    reply = "<b>Sudo Users:</b>\n"
+    for sudo in SUDO_USERS:
+        user_id = int(sudo) # Ensure int
+        user = bot.get_chat(user_id)
+        first_name = user.first_name
+        reply += """• <a href="tg://user?id={}">{}</a>\n""".format(user_id, first_name)
+    update.effective_message.reply_text(reply, parse_mode=ParseMode.HTML)
+
+
+@run_async
+def support_list(bot: Bot, update: Update):
+    reply = "<b>Support Users:</b>\n"
+    for support in SUPPORT_USERS:
+        user_id = int(support) # Ensure int
+        user = bot.get_chat(user_id)
+        first_name = user.first_name.replace(">", "&gt;")
+        first_name = first_name.replace("<", "&lt;")
+        reply += """• <a href="tg://user?id={}">{}</a>\n""".format(user_id, first_name)
+    update.effective_message.reply_text(reply, parse_mode=ParseMode.HTML)
+
+
+def convert(speed):
+	return round(int(speed)/1048576, 2) # bits to megabits
+
+@run_async	
+def speed_test(bot: Bot, update: Update):
+	test = speedtest.Speedtest()
+	test.get_best_server()
+	test.download()
+	test.upload()
+	result = test.results.dict()
+	
+	reply = "*Speedtest Results:*\n"
+	reply += f"Download: `{convert(result['download'])} Mb/s`\n"
+	reply += f"Upload: `{convert(result['upload'])} Mb/s`\n"
+	reply += f"Ping: `{result['ping']}`\n"
+	reply += f"ISP: `{result['client']['isp']}`"
+	update.effective_message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)  
 
 
 __help__ = True
@@ -485,6 +527,9 @@ ID_HANDLER = DisableAbleCommandHandler("id",
                                        pass_args=True,
                                        admin_ok=True)
 PING_HANDLER = DisableAbleCommandHandler("ping", ping)
+SUDO_LIST_HANDLER = CommandHandler("sudolist", sudo_list, filters=CustomFilters.sudo_filter | CustomFilters.support_filter)
+SUPPORT_LIST_HANDLER = CommandHandler("supportlist", support_list, filters=CustomFilters.sudo_filter | CustomFilters.support_filter)
+SPEEDTEST_HANDLER = CommandHandler("speed", speed_test, filters=CustomFilters.sudo_filter)
 IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID))
 INFO_HANDLER = DisableAbleCommandHandler("info",
                                          info,
@@ -520,6 +565,9 @@ dispatcher.add_handler(GET_PASTE_HANDLER)
 dispatcher.add_handler(PASTE_STATS_HANDLER)
 dispatcher.add_handler(ID_HANDLER)
 dispatcher.add_handler(IP_HANDLER)
+dispatcher.add_handler(SUDO_LIST_HANDLER)
+dispatcher.add_handler(SUPPORT_LIST_HANDLER)
+dispatcher.add_handler(SPEEDTEST_HANDLER)
 dispatcher.add_handler(INFO_HANDLER)
 dispatcher.add_handler(ECHO_HANDLER)
 dispatcher.add_handler(PING_HANDLER)
