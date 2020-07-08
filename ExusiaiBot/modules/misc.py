@@ -18,7 +18,9 @@
 import html
 import wikipedia
 import re
+import time
 from datetime import datetime
+from subprocess import Popen, PIPE
 from typing import Optional, List
 from covid import Covid
 
@@ -467,6 +469,14 @@ def format_integer(number, thousand_separator=','):
             result = char + result
     return result
 
+@run_async 
+def ping(bot: Bot, update: Update):
+    start_time = time.time()
+    requests.get('https://api.telegram.org')
+    end_time = time.time()
+    ping_time = round((end_time - start_time)*1000, 3)
+    update.effective_message.reply_text("*Pong!!!*\n`{}ms`".format(ping_time), parse_mode=ParseMode.MARKDOWN)
+
 
 __help__ = True
 
@@ -474,6 +484,7 @@ ID_HANDLER = DisableAbleCommandHandler("id",
                                        get_id,
                                        pass_args=True,
                                        admin_ok=True)
+PING_HANDLER = DisableAbleCommandHandler("ping", ping)
 IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID))
 INFO_HANDLER = DisableAbleCommandHandler("info",
                                          info,
@@ -511,6 +522,7 @@ dispatcher.add_handler(ID_HANDLER)
 dispatcher.add_handler(IP_HANDLER)
 dispatcher.add_handler(INFO_HANDLER)
 dispatcher.add_handler(ECHO_HANDLER)
+dispatcher.add_handler(PING_HANDLER)
 dispatcher.add_handler(MD_HELP_HANDLER)
 dispatcher.add_handler(STATS_HANDLER)
 dispatcher.add_handler(GDPR_HANDLER)
