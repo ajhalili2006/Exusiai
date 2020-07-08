@@ -37,6 +37,7 @@ from ExusiaiBot.__main__ import GDPR
 from ExusiaiBot.__main__ import STATS, USER_INFO
 from ExusiaiBot.modules.disable import DisableAbleCommandHandler
 from ExusiaiBot.modules.helper_funcs.extraction import extract_user
+from ExusiaiBot.modules.helper_funcs.filters import CustomFilters
 
 from ExusiaiBot.modules.tr_engine.strings import tld
 
