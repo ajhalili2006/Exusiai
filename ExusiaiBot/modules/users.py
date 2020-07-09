@@ -19,7 +19,7 @@ import re
 from time import sleep
 from typing import List
 from telegram import TelegramError, Update, Bot, ParseMode
-from telegram.error import BadRequest
+from telegram.error import BadRequest, Unauthorized
 from telegram.ext import MessageHandler, Filters, CommandHandler
 from telegram.ext.dispatcher import run_async
 
@@ -253,6 +253,24 @@ def __gdpr__(user_id):
 
 def __migrate__(old_chat_id, new_chat_id):
     sql.migrate_chat(old_chat_id, new_chat_id)
+    
+@run_async
+def rem_chat(bot: Bot, update: Update):
+    msg = update.effective_message
+    chats = sql.get_all_chats()
+    kicked_chats = 0
+    for chat in chats:
+        id = chat.chat_id
+        sleep(0.1) # Reduce floodwait
+        try:
+            bot.get_chat(id, timeout=60)
+        except (BadRequest, Unauthorized):
+            kicked_chats += 1
+            sql.rem_chat(id)
+    if kicked_chats >= 1:
+        msg.reply_text("Done! {} chats were removed from the database!".format(kicked_chats))
+    else:
+        msg.reply_text("No chats had to be removed from the database!")
 
 
 BROADCAST_HANDLER = CommandHandler("broadcasts",
@@ -271,6 +289,7 @@ LEAVECHAT_HANDLER = CommandHandler("leavechat",
                                    leavechat,
                                    pass_args=True,
                                    filters=Filters.user(OWNER_ID))
+DELETE_CHATS_HANDLER = CommandHandler("cleanchats", rem_chat, filters=Filters.user(OWNER_ID))
 SLIST_HANDLER = CommandHandler("slist",
                                slist,
                                filters=CustomFilters.sudo_filter
@@ -285,3 +304,4 @@ dispatcher.add_handler(SLIST_HANDLER)
 dispatcher.add_handler(USER_HANDLER, USERS_GROUP)
 dispatcher.add_handler(BROADCAST_HANDLER)
 dispatcher.add_handler(CHAT_CHECKER_HANDLER, CHAT_GROUP)
+dispatcher.add_handler(DELETE_CHATS_HANDLER)
