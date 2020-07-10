@@ -1,9 +1,11 @@
 # Module to get info about anime, characters, manga etc. by @TheRealPhoenix
 
 from jikanpy import Jikan
+import requests
+import json
 from jikanpy.exceptions import APIException
 
-from telegram import Message, Chat, User, ParseMode, Update, Bot, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import ParseMode, Update, Bot, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler,  run_async
 
 from ExusiaiBot import dispatcher
@@ -11,80 +13,85 @@ from ExusiaiBot import dispatcher
 jikan = Jikan()
 
 
+
+def anime_call_api(search_str):
+    query = '''
+    query ($id: Int,$search: String) { 
+      Media (id: $id, type: ANIME,search: $search) { 
+        id
+        title {
+          romaji
+          english
+        }
+        description (asHtml: false)
+        startDate{
+            year
+          }
+          episodes
+          chapters
+          volumes
+          season
+          type
+          format
+          status
+          duration
+          averageScore
+          genres
+          bannerImage
+      }
+    }
+    '''
+    variables = {
+        'search' : search_str
+    }
+    url = 'https://graphql.anilist.co'
+    response = requests.post(url, json={'query': query, 'variables': variables})
+    return response.text
+
+
+def formatJSON(outData):
+    msg = ""
+    jsonData = json.loads(outData)
+    res = list(jsonData.keys())
+    if "errors" in res:
+        msg += f"**Error** : `{jsonData['errors'][0]['message']}`"
+        return msg
+    else:
+        jsonData = jsonData['data']['Media']
+        if "bannerImage" in jsonData.keys():
+            msg += f"[💮]({jsonData['bannerImage']})"
+        else:
+            msg += "💮"
+        title = jsonData['title']['romaji']
+        link = f"https://anilist.co/anime/{jsonData['id']}"
+        msg += f"[{title}]({link})"
+        msg += f"\n\n**Type** : {jsonData['format']}"
+        msg += f"\n**Genres** : "
+        for g in jsonData['genres']:
+            msg += g+" "
+        msg += f"\n**Status** : {jsonData['status']}"
+        msg += f"\n**Episode** : {jsonData['episodes']}"
+        msg += f"\n**Year** : {jsonData['startDate']['year']}"
+        msg += f"\n**Score** : {jsonData['averageScore']}"
+        msg += f"\n**Duration** : {jsonData['duration']} min"
+        msg += f"\n\n __{jsonData['description']}__"
+        return msg.replace("<br>", '').replace("</br>", '').replace("<i>", '').replace("</i>", '')
+
+
 @run_async
-def anime(bot: Bot, update: Update, args):
-    msg = update.effective_message
+def anime(_bot: Bot, update: Update, args):
+    message = update.effective_message
     query = " ".join(args)
-    res = ""
-    try:
-        res = jikan.search("anime", query)
-    except APIException:
-        msg.reply_text("Error connecting to the API. Please try again!")
-        return ""
-    try:
-        res = res.get("results")[0].get("mal_id") # Grab first result
-    except APIException:
-        msg.reply_text("Error connecting to the API. Please try again!")
-        return ""
-    if res:
-        anime = jikan.anime(res)
-        title = anime.get("title")
-        japanese = anime.get("title_japanese")
-        type = anime.get("type")
-        duration = anime.get("duration")
-        synopsis = anime.get("synopsis")
-        source = anime.get("source")
-        status = anime.get("status")
-        episodes = anime.get("episodes")
-        score = anime.get("score")
-        rating = anime.get("rating")
-        genre_lst = anime.get("genres")
-        genres = ""
-        for genre in genre_lst:
-            genres += genre.get("name") + ", "
-        genres = genres[:-2]
-        studios = ""
-        studio_lst = anime.get("studios")
-        for studio in studio_lst:
-            studios += studio.get("name") + ", "
-        studios = studios[:-2]
-        duration = anime.get("duration")
-        premiered = anime.get("premiered")
-        image_url = anime.get("image_url")
-        url = anime.get("url")
-        trailer = anime.get("trailer_url")
-    else:
-        msg.reply_text("No results found!")
-        return
-    rep = f"<b>{title} ({japanese})</b>\n"
-    rep += f"<b>Type:</b> <code>{type}</code>\n"
-    rep += f"<b>Source:</b> <code>{source}</code>\n"
-    rep += f"<b>Status:</b> <code>{status}</code>\n"
-    rep += f"<b>Genres:</b> <code>{genres}</code>\n"
-    rep += f"<b>Episodes:</b> <code>{episodes}</code>\n"
-    rep += f"<b>Duration:</b> <code>{duration}</code>\n"
-    rep += f"<b>Score:</b> <code>{score}</code>\n"
-    rep += f"<b>Studio(s):</b> <code>{studios}</code>\n"
-    rep += f"<b>Premiered:</b> <code>{premiered}</code>\n"
-    rep += f"<b>Rating:</b> <code>{rating}</code>\n\n"
-    rep += f"<a href='{image_url}'>\u200c</a>"
-    rep += f"<i>{synopsis}</i>\n"
-    if trailer:
-        keyb = [
-            [InlineKeyboardButton("More Information", url=url),
-           InlineKeyboardButton("Trailer", url=trailer)]
-        ]
-    else:
-        keyb = [
-             [InlineKeyboardButton("More Information", url=url)]
-         ]
-    
-    
-    msg.reply_text(rep, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(keyb))
+    result = anime_call_api(query)
+    msg = formatJSON(result)
+    yt_search = query.replace(" ", "+")
+    url_link = f"https://www.youtube.com/results?search_query={yt_search}"
+    buttons = [[InlineKeyboardButton("🎥Trailer", url=url_link)]]
+    message.reply_text(msg, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(buttons))
     
 
 @run_async
-def character(bot: Bot, update: Update, args):
+def character(_bot: Bot, update: Update, args):
     msg = update.effective_message
     res = ""
     query = " ".join(args)
@@ -118,7 +125,7 @@ def character(bot: Bot, update: Update, args):
         
         
 @run_async
-def upcoming(bot: Bot, update: Update):
+def upcoming(_bot: Bot, update: Update):
     msg = update.effective_message
     rep = "<b>Upcoming anime</b>\n"
     later = jikan.season_later()
@@ -133,11 +140,9 @@ def upcoming(bot: Bot, update: Update):
     
     
 @run_async
-def manga(bot: Bot, update: Update, args):
+def manga(_bot: Bot, update: Update, args):
     msg = update.effective_message
     query = " ".join(args)
-    res = ""
-    manga = ""
     try:
         res = jikan.search("manga", query).get("results")[0].get("mal_id")
     except APIException:
@@ -179,7 +184,7 @@ def manga(bot: Bot, update: Update, args):
         
         msg.reply_text(rep, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(keyb))
         
-        
+                
 ANIME_HANDLER = CommandHandler("sanime", anime, pass_args=True)
 CHARACTER_HANDLER = CommandHandler("scharacter", character, pass_args=True)
 UPCOMING_HANDLER = CommandHandler("upcoming", upcoming)
