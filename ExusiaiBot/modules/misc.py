@@ -471,14 +471,15 @@ def format_integer(number, thousand_separator=','):
             result = char + result
     return result
 
-@run_async 
+@run_async
 def ping(bot: Bot, update: Update):
+    msg = update.effective_message
     start_time = time.time()
-    requests.get('https://api.telegram.org')
+    message = msg.reply_text("Pinging...")
     end_time = time.time()
     ping_time = round((end_time - start_time)*1000, 3)
-    update.effective_message.reply_text("*Pong!!!*\n`{}ms`".format(ping_time), parse_mode=ParseMode.MARKDOWN)
-    
+    message.edit_text("*Pong!!!*\n`{}ms`".format(ping_time), parse_mode=ParseMode.MARKDOWN)
+	
 @run_async
 def sudo_list(bot: Bot, update: Update):
     reply = "<b>Sudo Users:</b>\n"
@@ -559,6 +560,7 @@ PASTE_STATS_HANDLER = DisableAbleCommandHandler("pastestats",
 UD_HANDLER = DisableAbleCommandHandler("ud", ud)
 WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
 COVID_HANDLER = DisableAbleCommandHandler("covid", covid, admin_ok=True)
+ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True)
 
 dispatcher.add_handler(UD_HANDLER)
 dispatcher.add_handler(PASTE_HANDLER)
