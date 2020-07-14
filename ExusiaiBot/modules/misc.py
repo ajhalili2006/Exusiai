@@ -27,7 +27,7 @@ from covid import Covid
 
 import requests
 from telegram import Message, Chat, Update, Bot, MessageEntity
-from telegram import ParseMode, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import ParseMode, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton, MAX_MESSAGE_LENGTH, Update
 from telegram.ext import CommandHandler, run_async, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
 from telegram.error import BadRequest
@@ -180,6 +180,20 @@ def gdpr(bot: Bot, update: Update):
     update.effective_message.reply_text(tld(update.effective_chat.id,
                                             "send_gdpr"),
                                         parse_mode=ParseMode.MARKDOWN)
+
+def shell(command):
+    process = Popen(command,stdout=PIPE,shell=True,stderr=PIPE)
+    stdout,stderr = process.communicate()
+    return (stdout,stderr)
+
+def ram(bot: Bot, update: Update):
+    cmd = "ps -o pid"
+    output = shell(cmd)[0].decode()
+    processes = output.splitlines()
+    mem = 0
+    for p in processes[1:]:
+        mem += int(float(shell("ps u -p {} | awk ".format(p)+"'{sum=sum+$6}; END {print sum/1024}'")[0].decode().rstrip().replace("'","")))
+    update.message.reply_text(f"RAM usage = <code>{mem} MiB</code>", parse_mode=ParseMode.HTML)
 
 
 @run_async
@@ -561,6 +575,7 @@ UD_HANDLER = DisableAbleCommandHandler("ud", ud)
 WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
 COVID_HANDLER = DisableAbleCommandHandler("covid", covid, admin_ok=True)
 ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True)
+RAM_HANDLER = CommandHandler("ram", ram, filters=CustomFilters.sudo_filter)
 
 dispatcher.add_handler(UD_HANDLER)
 dispatcher.add_handler(PASTE_HANDLER)
@@ -575,6 +590,7 @@ dispatcher.add_handler(INFO_HANDLER)
 dispatcher.add_handler(ECHO_HANDLER)
 dispatcher.add_handler(PING_HANDLER)
 dispatcher.add_handler(MD_HELP_HANDLER)
+dispatcher.add_handler(RAM_HANDLER)
 dispatcher.add_handler(STATS_HANDLER)
 dispatcher.add_handler(GDPR_HANDLER)
 dispatcher.add_handler(GITHUB_HANDLER)
