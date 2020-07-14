@@ -160,3 +160,8 @@ def user_bot_owner(func):
             pass
 
     return is_user_bot_owner
+
+def sendMessage(text: str, bot: Bot, update: Update):
+    return bot.send_message(update.message.chat_id,
+                                    reply_to_message_id=update.message.message_id,
+                                    text=text, parse_mode=ParseMode.HTML)
