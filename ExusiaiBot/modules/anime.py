@@ -6,16 +6,15 @@ import json
 from jikanpy.exceptions import APIException
 
 from telegram import ParseMode, Update, Bot, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import CommandHandler,  run_async
+from telegram.ext import CommandHandler, run_async
 
 from ExusiaiBot import dispatcher
 
 jikan = Jikan()
 
 
-
 def anime_call_api(search_str):
-    query = '''
+    query = """
     query ($id: Int,$search: String) { 
       Media (id: $id, type: ANIME,search: $search) { 
         id
@@ -40,12 +39,10 @@ def anime_call_api(search_str):
           bannerImage
       }
     }
-    '''
-    variables = {
-        'search' : search_str
-    }
-    url = 'https://graphql.anilist.co'
-    response = requests.post(url, json={'query': query, 'variables': variables})
+    """
+    variables = {"search": search_str}
+    url = "https://graphql.anilist.co"
+    response = requests.post(url, json={"query": query, "variables": variables})
     return response.text
 
 
@@ -57,25 +54,30 @@ def formatJSON(outData):
         msg += f"**Error** : `{jsonData['errors'][0]['message']}`"
         return msg
     else:
-        jsonData = jsonData['data']['Media']
+        jsonData = jsonData["data"]["Media"]
         if "bannerImage" in jsonData.keys():
             msg += f"[💮]({jsonData['bannerImage']})"
         else:
             msg += "💮"
-        title = jsonData['title']['romaji']
+        title = jsonData["title"]["romaji"]
         link = f"https://anilist.co/anime/{jsonData['id']}"
         msg += f"[{title}]({link})"
         msg += f"\n\n**Type** : {jsonData['format']}"
         msg += f"\n**Genres** : "
-        for g in jsonData['genres']:
-            msg += g+" "
+        for g in jsonData["genres"]:
+            msg += g + " "
         msg += f"\n**Status** : {jsonData['status']}"
         msg += f"\n**Episode** : {jsonData['episodes']}"
         msg += f"\n**Year** : {jsonData['startDate']['year']}"
         msg += f"\n**Score** : {jsonData['averageScore']}"
         msg += f"\n**Duration** : {jsonData['duration']} min"
         msg += f"\n\n __{jsonData['description']}__"
-        return msg.replace("<br>", '').replace("</br>", '').replace("<i>", '').replace("</i>", '')
+        return (
+            msg.replace("<br>", "")
+            .replace("</br>", "")
+            .replace("<i>", "")
+            .replace("</i>", "")
+        )
 
 
 @run_async
@@ -87,8 +89,10 @@ def anime(_bot: Bot, update: Update, args):
     yt_search = query.replace(" ", "+")
     url_link = f"https://www.youtube.com/results?search_query={yt_search}"
     buttons = [[InlineKeyboardButton("🎥Trailer", url=url_link)]]
-    message.reply_text(msg, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(buttons))
-    
+    message.reply_text(
+        msg, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(buttons)
+    )
+
 
 @run_async
 def character(_bot: Bot, update: Update, args):
@@ -117,13 +121,13 @@ def character(_bot: Bot, update: Update, args):
         rep = f"<b>{name} ({kanji})</b>\n\n"
         rep += f"<a href='{image}'>\u200c</a>"
         rep += f"<i>{about}</i>\n"
-        keyb = [
-            [InlineKeyboardButton("More Information", url=url)]
-        ]
-        
-        msg.reply_text(rep, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(keyb))
-        
-        
+        keyb = [[InlineKeyboardButton("More Information", url=url)]]
+
+        msg.reply_text(
+            rep, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(keyb)
+        )
+
+
 @run_async
 def upcoming(_bot: Bot, update: Update):
     msg = update.effective_message
@@ -137,8 +141,8 @@ def upcoming(_bot: Bot, update: Update):
         if len(rep) > 2000:
             break
     msg.reply_text(rep, parse_mode=ParseMode.HTML)
-    
-    
+
+
 @run_async
 def manga(_bot: Bot, update: Update, args):
     msg = update.effective_message
@@ -178,13 +182,13 @@ def manga(_bot: Bot, update: Update, args):
         rep += f"<b>Chapters:</b> <code>{chapters}</code>\n\n"
         rep += f"<a href='{image}'>\u200c</a>"
         rep += f"<i>{synopsis}</i>"
-        keyb = [
-            [InlineKeyboardButton("More Information", url=url)]
-        ]
-        
-        msg.reply_text(rep, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(keyb))
-        
-                
+        keyb = [[InlineKeyboardButton("More Information", url=url)]]
+
+        msg.reply_text(
+            rep, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(keyb)
+        )
+
+
 ANIME_HANDLER = CommandHandler("sanime", anime, pass_args=True)
 CHARACTER_HANDLER = CommandHandler("scharacter", character, pass_args=True)
 UPCOMING_HANDLER = CommandHandler("upcoming", upcoming)

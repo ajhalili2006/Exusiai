@@ -63,16 +63,24 @@ def keyboard(bot, update):
         else:
             btn3 = ""
 
-        #TODO: Remove except garbage
+        # TODO: Remove except garbage
 
     update.effective_message.reply_text(
         tld(chat.id, "keyboard_updated"),
-        reply_markup=ReplyKeyboardMarkup([[
-            KeyboardButton("/help"),
-            KeyboardButton("/notes - {}".format(tld(chat.id,
-                                                    "keyboard_notes")))
-        ], [KeyboardButton(btn1)], [KeyboardButton(btn2)],
-                                          [KeyboardButton(btn3)]]))
+        reply_markup=ReplyKeyboardMarkup(
+            [
+                [
+                    KeyboardButton("/help"),
+                    KeyboardButton(
+                        "/notes - {}".format(tld(chat.id, "keyboard_notes"))
+                    ),
+                ],
+                [KeyboardButton(btn1)],
+                [KeyboardButton(btn2)],
+                [KeyboardButton(btn3)],
+            ]
+        ),
+    )
 
 
 KEYBOARD_HANDLER = CommandHandler(["keyboard"], keyboard)

@@ -23,8 +23,14 @@ from typing import List
 
 from telegram import Update, Bot
 from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.error import (Unauthorized, BadRequest, TimedOut, NetworkError,
-                            ChatMigrated, TelegramError)
+from telegram.error import (
+    Unauthorized,
+    BadRequest,
+    TimedOut,
+    NetworkError,
+    ChatMigrated,
+    TelegramError,
+)
 from telegram.ext import CommandHandler, Filters, MessageHandler, CallbackQueryHandler
 from telegram.ext.dispatcher import run_async, DispatcherHandlerStop, Dispatcher
 
@@ -49,13 +55,12 @@ importlib.import_module("ExusiaiBot.modules.tr_engine.language")
 
 for module_name in ALL_MODULES:
     imported_module = importlib.import_module("ExusiaiBot.modules." + module_name)
-    modname = imported_module.__name__.split('.')[2]
+    modname = imported_module.__name__.split(".")[2]
 
     if not modname.lower() in IMPORTED:
         IMPORTED[modname.lower()] = imported_module
     else:
-        raise Exception(
-            "Can't have two modules with the same name! Please change one")
+        raise Exception("Can't have two modules with the same name! Please change one")
 
     if hasattr(imported_module, "__help__") and imported_module.__help__:
         HELPABLE[modname.lower()] = tld(0, "modname_" + modname).strip()
@@ -83,14 +88,15 @@ for module_name in ALL_MODULES:
 # Do NOT async this!
 def send_help(chat_id, text, keyboard=None):
     if not keyboard:
-        keyboard = InlineKeyboardMarkup(
-            paginate_modules(chat_id, 0, HELPABLE, "help"))
+        keyboard = InlineKeyboardMarkup(paginate_modules(chat_id, 0, HELPABLE, "help"))
 
-    dispatcher.bot.send_message(chat_id=chat_id,
-                                text=text,
-                                parse_mode=ParseMode.MARKDOWN,
-                                reply_markup=keyboard,
-                                disable_web_page_preview=True)
+    dispatcher.bot.send_message(
+        chat_id=chat_id,
+        text=text,
+        parse_mode=ParseMode.MARKDOWN,
+        reply_markup=keyboard,
+        disable_web_page_preview=True,
+    )
 
 
 @run_async
@@ -110,9 +116,10 @@ def start(bot: Bot, update: Update, args: List[str]):
             if args[0].lower() == "help":
                 send_help(
                     update.effective_chat.id,
-                    tld(chat.id,
-                        "send-help").format(dispatcher.bot.first_name,
-                                            tld(chat.id, "cmd_multitrigger")))
+                    tld(chat.id, "send-help").format(
+                        dispatcher.bot.first_name, tld(chat.id, "cmd_multitrigger")
+                    ),
+                )
 
             elif args[0][1:].isdigit() and "rules" in IMPORTED:
                 IMPORTED["rules"].send_rules(update, args[0], from_pm=True)
@@ -121,8 +128,7 @@ def start(bot: Bot, update: Update, args: List[str]):
             send_start(bot, update)
     else:
         try:
-            update.effective_message.reply_text(
-                tld(chat.id, 'main_start_group'))
+            update.effective_message.reply_text(tld(chat.id, "main_start_group"))
         except Exception:
             print("Nut")
 
@@ -131,39 +137,51 @@ def send_start(bot, update):
     chat = update.effective_chat
 
     # chat = update.effective_chat and unused variable
-    text = tld(chat.id, 'main_start_pm')
+    text = tld(chat.id, "main_start_pm")
 
-    keyboard = [[
-        InlineKeyboardButton(text=tld(chat.id, 'main_start_btn_support'),
-                             url="https://t.me/exusiaisupport")
-    ]]
-    keyboard += [[
-        InlineKeyboardButton(text=tld(chat.id, 'main_start_btn_lang'),
-                             callback_data="set_lang_"),
-        InlineKeyboardButton(text=tld(chat.id, 'btn_help'),
-                             callback_data="help_back")
-    ]]
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                text=tld(chat.id, "main_start_btn_support"),
+                url="https://t.me/exusiaisupport",
+            )
+        ]
+    ]
+    keyboard += [
+        [
+            InlineKeyboardButton(
+                text=tld(chat.id, "main_start_btn_lang"), callback_data="set_lang_"
+            ),
+            InlineKeyboardButton(
+                text=tld(chat.id, "btn_help"), callback_data="help_back"
+            ),
+        ]
+    ]
 
     try:
         query = update.callback_query
         # query.message.delete()
-        bot.edit_message_text(chat_id=query.message.chat_id,
-                              message_id=query.message.message_id,
-                              text=text,
-                              parse_mode=ParseMode.MARKDOWN,
-                              reply_markup=InlineKeyboardMarkup(keyboard),
-                              disable_web_page_preview=True)
+        bot.edit_message_text(
+            chat_id=query.message.chat_id,
+            message_id=query.message.message_id,
+            text=text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            disable_web_page_preview=True,
+        )
     except Exception:
         pass
 
     if query:
         try:
-            bot.edit_message_text(chat_id=query.message.chat_id,
-                                  message_id=query.message.message_id,
-                                  text=text,
-                                  parse_mode=ParseMode.MARKDOWN,
-                                  reply_markup=InlineKeyboardMarkup(keyboard),
-                                  disable_web_page_preview=True)
+            bot.edit_message_text(
+                chat_id=query.message.chat_id,
+                message_id=query.message.message_id,
+                text=text,
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=InlineKeyboardMarkup(keyboard),
+                disable_web_page_preview=True,
+            )
         except Exception:
             return
     else:
@@ -171,7 +189,8 @@ def send_start(bot, update):
             text,
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True)
+            disable_web_page_preview=True,
+        )
 
 
 # for test purposes
@@ -210,36 +229,45 @@ def help_button(bot: Bot, update: Update):
             module = mod_match.group(1)
             mod_name = tld(chat.id, "modname_" + module).strip()
             help_txt = tld(
-                chat.id, module +
-                "_help")  # tld_help(chat.id, HELPABLE[module].__mod_name__)
+                chat.id, module + "_help"
+            )  # tld_help(chat.id, HELPABLE[module].__mod_name__)
 
             if not help_txt:
                 LOGGER.exception(f"Help string for {module} not found!")
 
             text = tld(chat.id, "here_is_help").format(mod_name, help_txt)
 
-            bot.edit_message_text(chat_id=query.message.chat_id,
-                                  message_id=query.message.message_id,
-                                  text=text,
-                                  parse_mode=ParseMode.MARKDOWN,
-                                  reply_markup=InlineKeyboardMarkup([[
-                                      InlineKeyboardButton(
-                                          text=tld(chat.id, "btn_go_back"),
-                                          callback_data="help_back")
-                                  ]]),
-                                  disable_web_page_preview=True)
+            bot.edit_message_text(
+                chat_id=query.message.chat_id,
+                message_id=query.message.message_id,
+                text=text,
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                text=tld(chat.id, "btn_go_back"),
+                                callback_data="help_back",
+                            )
+                        ]
+                    ]
+                ),
+                disable_web_page_preview=True,
+            )
 
         elif back_match:
-            bot.edit_message_text(chat_id=query.message.chat_id,
-                                  message_id=query.message.message_id,
-                                  text=tld(chat.id, "send-help").format(
-                                      dispatcher.bot.first_name,
-                                      tld(chat.id, "cmd_multitrigger")),
-                                  parse_mode=ParseMode.MARKDOWN,
-                                  reply_markup=InlineKeyboardMarkup(
-                                      paginate_modules(chat.id, 0, HELPABLE,
-                                                       "help")),
-                                  disable_web_page_preview=True)
+            bot.edit_message_text(
+                chat_id=query.message.chat_id,
+                message_id=query.message.message_id,
+                text=tld(chat.id, "send-help").format(
+                    dispatcher.bot.first_name, tld(chat.id, "cmd_multitrigger")
+                ),
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=InlineKeyboardMarkup(
+                    paginate_modules(chat.id, 0, HELPABLE, "help")
+                ),
+                disable_web_page_preview=True,
+            )
 
         # ensure no spinny white circle
         bot.answer_callback_query(query.id)
@@ -257,12 +285,18 @@ def get_help(bot: Bot, update: Update):
     # ONLY send help in PM
     if chat.type != chat.PRIVATE:
         update.effective_message.reply_text(
-            tld(chat.id, 'help_pm_only'),
-            reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton(text=tld(chat.id, 'btn_help'),
-                                     url="t.me/{}?start=help".format(
-                                         bot.username))
-            ]]))
+            tld(chat.id, "help_pm_only"),
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text=tld(chat.id, "btn_help"),
+                            url="t.me/{}?start=help".format(bot.username),
+                        )
+                    ]
+                ]
+            ),
+        )
         return
 
     if len(args) >= 2:
@@ -281,23 +315,33 @@ def get_help(bot: Bot, update: Update):
 
             text = tld(chat.id, "here_is_help").format(mod_name, help_txt)
             send_help(
-                chat.id, text,
-                InlineKeyboardMarkup([[
-                    InlineKeyboardButton(text=tld(chat.id, "btn_go_back"),
-                                         callback_data="help_back")
-                ]]))
+                chat.id,
+                text,
+                InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                text=tld(chat.id, "btn_go_back"),
+                                callback_data="help_back",
+                            )
+                        ]
+                    ]
+                ),
+            )
 
             return
 
-        update.effective_message.reply_text(tld(
-            chat.id, "help_not_found").format(args[1]),
-                                            parse_mode=ParseMode.HTML)
+        update.effective_message.reply_text(
+            tld(chat.id, "help_not_found").format(args[1]), parse_mode=ParseMode.HTML
+        )
         return
 
     send_help(
         chat.id,
-        tld(chat.id, "send-help").format(dispatcher.bot.first_name,
-                                         tld(chat.id, "cmd_multitrigger")))
+        tld(chat.id, "send-help").format(
+            dispatcher.bot.first_name, tld(chat.id, "cmd_multitrigger")
+        ),
+    )
 
 
 def migrate_chats(bot: Bot, update: Update):
@@ -324,11 +368,9 @@ def main():
     help_handler = CommandHandler("help", get_help)
     help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_")
 
-    start_callback_handler = CallbackQueryHandler(send_start,
-                                                  pattern=r"bot_start")
+    start_callback_handler = CallbackQueryHandler(send_start, pattern=r"bot_start")
 
-    migrate_handler = MessageHandler(Filters.status_update.migrate,
-                                     migrate_chats)
+    migrate_handler = MessageHandler(Filters.status_update.migrate, migrate_chats)
 
     # dispatcher.add_handler(test_handler)
     dispatcher.add_handler(start_handler)
@@ -343,11 +385,13 @@ def main():
 
     LOGGER.info("Using long polling.")
     # updater.start_polling(timeout=15, read_latency=4, clean=True)
-    updater.start_polling(poll_interval=0.0,
-                          timeout=10,
-                          clean=True,
-                          bootstrap_retries=-1,
-                          read_latency=3.0)
+    updater.start_polling(
+        poll_interval=0.0,
+        timeout=10,
+        clean=True,
+        bootstrap_retries=-1,
+        read_latency=3.0,
+    )
 
     LOGGER.info("Successfully loaded")
     if len(argv) not in (1, 3, 4):
@@ -369,7 +413,8 @@ def process_update(self, update):
             self.dispatch_error(None, update)
         except Exception:
             self.logger.exception(
-                'An uncaught error was raised while handling the error')
+                "An uncaught error was raised while handling the error"
+            )
         return
 
     if update.effective_chat:  # Checks if update contains chat object
@@ -377,8 +422,7 @@ def process_update(self, update):
     try:
         cnt = CHATS_CNT.get(update.effective_chat.id, 0)
     except AttributeError:
-        self.logger.exception(
-            'An uncaught error was raised while updating process')
+        self.logger.exception("An uncaught error was raised while updating process")
         return
 
     t = CHATS_TIME.get(update.effective_chat.id, datetime.datetime(1970, 1, 1))
@@ -395,38 +439,39 @@ def process_update(self, update):
 
     for group in self.groups:
         try:
-            for handler in (x for x in self.handlers[group]
-                            if x.check_update(update)):
+            for handler in (x for x in self.handlers[group] if x.check_update(update)):
                 handler.handle_update(update, self)
                 break
 
         # Stop processing with any other handler.
         except DispatcherHandlerStop:
-            self.logger.debug(
-                'Stopping further handlers due to DispatcherHandlerStop')
+            self.logger.debug("Stopping further handlers due to DispatcherHandlerStop")
             break
 
         # Dispatch any error.
         except TelegramError as te:
             self.logger.warning(
-                'A TelegramError was raised while processing the Update')
+                "A TelegramError was raised while processing the Update"
+            )
 
             try:
                 self.dispatch_error(update, te)
             except DispatcherHandlerStop:
-                self.logger.debug('Error handler stopped further handlers')
+                self.logger.debug("Error handler stopped further handlers")
                 break
             except Exception:
                 self.logger.exception(
-                    'An uncaught error was raised while handling the error')
+                    "An uncaught error was raised while handling the error"
+                )
 
         # Errors should not stop the thread.
         except Exception:
             self.logger.exception(
-                'An uncaught error was raised while processing the update')
+                "An uncaught error was raised while processing the update"
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     LOGGER.info("Successfully loaded modules: " + str(ALL_MODULES))
     tbot.start(bot_token=TOKEN)
     main()

@@ -30,7 +30,10 @@ from ExusiaiBot.modules.helper_funcs.chat_status import user_admin
 from ExusiaiBot.modules.helper_funcs.extraction import extract_text
 from ExusiaiBot.modules.helper_funcs.filters import CustomFilters
 from ExusiaiBot.modules.helper_funcs.misc import build_keyboard
-from ExusiaiBot.modules.helper_funcs.string_handling import split_quotes, button_markdown_parser
+from ExusiaiBot.modules.helper_funcs.string_handling import (
+    split_quotes,
+    button_markdown_parser,
+)
 from ExusiaiBot.modules.sql import cust_filters_sql as sql
 
 from ExusiaiBot.modules.tr_engine.strings import tld
@@ -63,21 +66,23 @@ def list_handlers(bot: Bot, update: Update):
 
     if not all_handlers:
         update.effective_message.reply_text(
-            tld(chat.id, "cust_filters_list_empty").format(chat_name))
+            tld(chat.id, "cust_filters_list_empty").format(chat_name)
+        )
         return
 
     for keyword in all_handlers:
         entry = " • `{}`\n".format(escape_markdown(keyword))
         if len(entry) + len(filter_list) > telegram.MAX_MESSAGE_LENGTH:
             update.effective_message.reply_text(
-                filter_list.format(chat_name),
-                parse_mode=telegram.ParseMode.MARKDOWN)
+                filter_list.format(chat_name), parse_mode=telegram.ParseMode.MARKDOWN
+            )
             filter_list = entry
         else:
             filter_list += entry
 
-    update.effective_message.reply_text(filter_list.format(chat_name),
-                                        parse_mode=telegram.ParseMode.MARKDOWN)
+    update.effective_message.reply_text(
+        filter_list.format(chat_name), parse_mode=telegram.ParseMode.MARKDOWN
+    )
 
 
 # NOT ASYNC BECAUSE DISPATCHER HANDLER RAISED
@@ -87,8 +92,8 @@ def filters(bot: Bot, update: Update):
     user = update.effective_user
     msg = update.effective_message
     args = msg.text.split(
-        None,
-        1)  # use python's maxsplit to separate Cmd, keyword, and reply_text
+        None, 1
+    )  # use python's maxsplit to separate Cmd, keyword, and reply_text
 
     conn = connected(bot, update, chat, user.id)
     if conn:
@@ -121,9 +126,11 @@ def filters(bot: Bot, update: Update):
     # determine what the contents of the filter are - text, image, sticker, etc
     if len(extracted) >= 2:
         offset = len(extracted[1]) - len(
-            msg.text)  # set correct offset relative to command + notename
+            msg.text
+        )  # set correct offset relative to command + notename
         content, buttons = button_markdown_parser(
-            extracted[1], entities=msg.parse_entities(), offset=offset)
+            extracted[1], entities=msg.parse_entities(), offset=offset
+        )
         content = content.strip()
         if not content:
             msg.reply_text(tld(chat.id, "cust_filters_err_btn_only"))
@@ -138,8 +145,7 @@ def filters(bot: Bot, update: Update):
         is_document = True
 
     elif msg.reply_to_message and msg.reply_to_message.photo:
-        content = msg.reply_to_message.photo[
-            -1].file_id  # last elem = best quality
+        content = msg.reply_to_message.photo[-1].file_id  # last elem = best quality
         is_image = True
 
     elif msg.reply_to_message and msg.reply_to_message.audio:
@@ -164,12 +170,23 @@ def filters(bot: Bot, update: Update):
         if handler.filters == (keyword, chat_id):
             dispatcher.remove_handler(handler, HANDLER_GROUP)
 
-    sql.add_filter(chat_id, keyword, content, is_sticker, is_document,
-                   is_image, is_audio, is_voice, is_video, buttons)
+    sql.add_filter(
+        chat_id,
+        keyword,
+        content,
+        is_sticker,
+        is_document,
+        is_image,
+        is_audio,
+        is_voice,
+        is_video,
+        buttons,
+    )
 
-    msg.reply_text(tld(chat.id,
-                       "cust_filters_add_success").format(keyword, chat_name),
-                   parse_mode=telegram.ParseMode.MARKDOWN)
+    msg.reply_text(
+        tld(chat.id, "cust_filters_add_success").format(keyword, chat_name),
+        parse_mode=telegram.ParseMode.MARKDOWN,
+    )
     raise DispatcherHandlerStop
 
 
@@ -198,7 +215,8 @@ def stop_filter(bot: Bot, update: Update):
 
     if not chat_filters:
         update.effective_message.reply_text(
-            tld(chat.id, "cust_filters_list_empty").format(chat_name))
+            tld(chat.id, "cust_filters_list_empty").format(chat_name)
+        )
         return
 
     for keyword in chat_filters:
@@ -206,11 +224,11 @@ def stop_filter(bot: Bot, update: Update):
             sql.remove_filter(chat_id, args[1].lower())
             update.effective_message.reply_text(
                 tld(chat.id, "cust_filters_stop_success").format(chat_name),
-                parse_mode=telegram.ParseMode.MARKDOWN)
+                parse_mode=telegram.ParseMode.MARKDOWN,
+            )
             raise DispatcherHandlerStop
 
-    update.effective_message.reply_text(
-        tld(chat.id, "cust_filters_err_wrong_filter"))
+    update.effective_message.reply_text(tld(chat.id, "cust_filters_err_wrong_filter"))
 
 
 @run_async
@@ -254,29 +272,36 @@ def reply_filter(bot: Bot, update: Update):
                 keyboard = InlineKeyboardMarkup(keyb)
 
                 try:
-                    message.reply_text(filt.reply,
-                                       parse_mode=ParseMode.MARKDOWN,
-                                       disable_web_page_preview=True,
-                                       reply_markup=keyboard)
+                    message.reply_text(
+                        filt.reply,
+                        parse_mode=ParseMode.MARKDOWN,
+                        disable_web_page_preview=True,
+                        reply_markup=keyboard,
+                    )
                 except BadRequest as excp:
                     if excp.message == "Unsupported url protocol":
-                        message.reply_text(
-                            tld(chat.id, "cust_filters_err_protocol"))
+                        message.reply_text(tld(chat.id, "cust_filters_err_protocol"))
                     elif excp.message == "Reply message not found":
-                        bot.send_message(chat.id,
-                                         filt.reply,
-                                         parse_mode=ParseMode.MARKDOWN,
-                                         disable_web_page_preview=True,
-                                         reply_markup=keyboard)
+                        bot.send_message(
+                            chat.id,
+                            filt.reply,
+                            parse_mode=ParseMode.MARKDOWN,
+                            disable_web_page_preview=True,
+                            reply_markup=keyboard,
+                        )
                     else:
                         try:
                             message.reply_text(
-                                tld(chat.id, "cust_filters_err_badformat"))
-                            LOGGER.warning("Message %s could not be parsed",
-                                           str(filt.reply))
+                                tld(chat.id, "cust_filters_err_badformat")
+                            )
+                            LOGGER.warning(
+                                "Message %s could not be parsed", str(filt.reply)
+                            )
                             LOGGER.exception(
                                 "Could not parse filter %s in chat %s",
-                                str(filt.keyword), str(chat.id))
+                                str(filt.keyword),
+                                str(chat.id),
+                            )
                         except Exception:
                             print("Nut")
 
@@ -298,7 +323,7 @@ def stop_all_filters(bot: Bot, update: Update):
     else:
         owner = chat.get_member(user.id)
         chat.title = chat.title
-        if owner.status != 'creator':
+        if owner.status != "creator":
             message.reply_text(tld(chat.id, "notes_must_be_creator"))
             return
 
@@ -306,8 +331,7 @@ def stop_all_filters(bot: Bot, update: Update):
     flist = sql.get_chat_triggers(chat.id)
 
     if not flist:
-        message.reply_text(
-            tld(chat.id, "cust_filters_list_empty").format(chat.title))
+        message.reply_text(tld(chat.id, "cust_filters_list_empty").format(chat.title))
         return
 
     f_flist = []
@@ -322,8 +346,9 @@ def stop_all_filters(bot: Bot, update: Update):
 
 
 def __stats__():
-    return "• `{}` filters, across `{}` chats.".format(sql.num_filters(),
-                                                       sql.num_chats())
+    return "• `{}` filters, across `{}` chats.".format(
+        sql.num_filters(), sql.num_chats()
+    )
 
 
 def __migrate__(old_chat_id, new_chat_id):
@@ -335,9 +360,7 @@ __help__ = True
 FILTER_HANDLER = DisableAbleCommandHandler("filter", filters)
 STOP_HANDLER = DisableAbleCommandHandler("stop", stop_filter)
 STOPALL_HANDLER = DisableAbleCommandHandler("stopall", stop_all_filters)
-LIST_HANDLER = DisableAbleCommandHandler("filters",
-                                         list_handlers,
-                                         admin_ok=True)
+LIST_HANDLER = DisableAbleCommandHandler("filters", list_handlers, admin_ok=True)
 CUST_FILTER_HANDLER = MessageHandler(CustomFilters.has_text, reply_filter)
 
 dispatcher.add_handler(FILTER_HANDLER)

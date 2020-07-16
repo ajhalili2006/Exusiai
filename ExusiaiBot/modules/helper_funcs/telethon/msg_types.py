@@ -34,7 +34,7 @@ async def get_note_type(message):
     data_type = None
     content = None
     text = ""
-    split = message.text[len("/save "):]
+    split = message.text[len("/save ") :]
     splitter = re.match(NOTE_REGEX, split)
     note_name = splitter.group(1).strip('"')
 
@@ -63,7 +63,7 @@ async def get_note_type(message):
         text = reply.text
         data_type = Types.FILE
 
-    string = re.sub(' +', ' ', text).strip()
+    string = re.sub(" +", " ", text).strip()
     return note_name, string, data_type, content, buttons
 
 
@@ -87,5 +87,5 @@ async def get_message_type(message, split: None):
         text = reply.text
         data_type = Types.FILE
 
-    string = re.sub(' +', ' ', text).strip()
+    string = re.sub(" +", " ", text).strip()
     return string, data_type, content, buttons

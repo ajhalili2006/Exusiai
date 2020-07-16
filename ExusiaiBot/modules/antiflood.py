@@ -24,7 +24,11 @@ from telegram.ext import Filters, MessageHandler, CommandHandler, run_async
 from telegram.utils.helpers import mention_html
 
 from ExusiaiBot import dispatcher
-from ExusiaiBot.modules.helper_funcs.chat_status import is_user_admin, user_admin, can_restrict
+from ExusiaiBot.modules.helper_funcs.chat_status import (
+    is_user_admin,
+    user_admin,
+    can_restrict,
+)
 from ExusiaiBot.modules.log_channel import loggable
 from ExusiaiBot.modules.sql import antiflood_sql as sql
 
@@ -57,7 +61,8 @@ def check_flood(bot: Bot, update: Update) -> str:
         msg.reply_text(tld(chat.id, "flood_mute"))
 
         return tld(chat.id, "flood_logger_success").format(
-            html.escape(chat.title), mention_html(user.id, user.first_name))
+            html.escape(chat.title), mention_html(user.id, user.first_name)
+        )
 
     except BadRequest:
         msg.reply_text(tld(chat.id, "flood_err_no_perm"))
@@ -86,8 +91,8 @@ def set_flood(bot: Bot, update: Update, args: List[str]) -> str:
                 sql.set_flood(chat.id, 0)
                 message.reply_text(tld(chat.id, "flood_set_off"))
                 return tld(chat.id, "flood_logger_set_off").format(
-                    html.escape(chat.title),
-                    mention_html(user.id, user.first_name))
+                    html.escape(chat.title), mention_html(user.id, user.first_name)
+                )
 
             elif amount < 3:
                 message.reply_text(tld(chat.id, "flood_err_num"))
@@ -98,7 +103,9 @@ def set_flood(bot: Bot, update: Update, args: List[str]) -> str:
                 message.reply_text(tld(chat.id, "flood_set").format(amount))
                 return tld(chat.id, "flood_logger_set_on").format(
                     html.escape(chat.title),
-                    mention_html(user.id, user.first_name), amount)
+                    mention_html(user.id, user.first_name),
+                    amount,
+                )
 
         else:
             message.reply_text(tld(chat.id, "flood_err_args"))
@@ -115,7 +122,8 @@ def flood(bot: Bot, update: Update):
         update.effective_message.reply_text(tld(chat.id, "flood_status_off"))
     else:
         update.effective_message.reply_text(
-            tld(chat.id, "flood_status_on").format(limit))
+            tld(chat.id, "flood_status_on").format(limit)
+        )
 
 
 def __migrate__(old_chat_id, new_chat_id):
@@ -127,11 +135,11 @@ __help__ = True
 # TODO: Add actions: ban/kick/mute/tban/tmute
 
 FLOOD_BAN_HANDLER = MessageHandler(
-    Filters.all & ~Filters.status_update & Filters.group, check_flood)
-SET_FLOOD_HANDLER = CommandHandler("setflood",
-                                   set_flood,
-                                   pass_args=True,
-                                   filters=Filters.group)
+    Filters.all & ~Filters.status_update & Filters.group, check_flood
+)
+SET_FLOOD_HANDLER = CommandHandler(
+    "setflood", set_flood, pass_args=True, filters=Filters.group
+)
 FLOOD_HANDLER = CommandHandler("flood", flood, filters=Filters.group)
 
 dispatcher.add_handler(FLOOD_BAN_HANDLER, FLOOD_GROUP)

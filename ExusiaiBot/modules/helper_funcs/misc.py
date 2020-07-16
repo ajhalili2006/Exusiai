@@ -57,42 +57,45 @@ def split_message(msg: str) -> List[str]:
         return result
 
 
-def paginate_modules(chat_id,
-                     page_n: int,
-                     module_dict: Dict,
-                     prefix,
-                     chat=None) -> List:
+def paginate_modules(
+    chat_id, page_n: int, module_dict: Dict, prefix, chat=None
+) -> List:
     if not chat:
-        modules = sorted([
-            EqInlineKeyboardButton(tld(chat_id, "modname_" + x),
-                                   callback_data="{}_module({})".format(
-                                       prefix, x)) for x in module_dict.keys()
-        ])
+        modules = sorted(
+            [
+                EqInlineKeyboardButton(
+                    tld(chat_id, "modname_" + x),
+                    callback_data="{}_module({})".format(prefix, x),
+                )
+                for x in module_dict.keys()
+            ]
+        )
     else:
-        modules = sorted([
-            EqInlineKeyboardButton(tld(chat_id, "modname_" + x),
-                                   callback_data="{}_module({},{})".format(
-                                       prefix, chat, x))
-            for x in module_dict.keys()
-        ])
+        modules = sorted(
+            [
+                EqInlineKeyboardButton(
+                    tld(chat_id, "modname_" + x),
+                    callback_data="{}_module({},{})".format(prefix, chat, x),
+                )
+                for x in module_dict.keys()
+            ]
+        )
 
-    pairs = [
-        modules[i * 3:(i + 1) * 3] for i in range((len(modules) + 3 - 1) // 3)
-    ]
+    pairs = [modules[i * 3 : (i + 1) * 3] for i in range((len(modules) + 3 - 1) // 3)]
 
     round_num = len(modules) / 3
     calc = len(modules) - round(round_num)
     if calc == 1:
-        pairs.append((modules[-1], ))
+        pairs.append((modules[-1],))
     elif calc == 2:
-        pairs.append((modules[-1], ))
+        pairs.append((modules[-1],))
 
     # max_num_pages = ceil(len(pairs) / 28)
     # modulo_page = page_n % max_num_pages
 
     # can only have a certain amount of buttons side by side
 
-    #if len(pairs) > 21:
+    # if len(pairs) > 21:
     #    pairs = pairs[modulo_page * 28:28]
     # else:
     #     pairs += [[
@@ -103,19 +106,15 @@ def paginate_modules(chat_id,
     return pairs
 
 
-def send_to_list(bot: Bot,
-                 send_to: list,
-                 message: str,
-                 markdown=False,
-                 html=False) -> None:
+def send_to_list(
+    bot: Bot, send_to: list, message: str, markdown=False, html=False
+) -> None:
     if html and markdown:
         raise Exception("Can only send with either markdown or HTML!")
     for user_id in set(send_to):
         try:
             if markdown:
-                bot.send_message(user_id,
-                                 message,
-                                 parse_mode=ParseMode.MARKDOWN)
+                bot.send_message(user_id, message, parse_mode=ParseMode.MARKDOWN)
             elif html:
                 bot.send_message(user_id, message, parse_mode=ParseMode.HTML)
             else:
@@ -161,7 +160,11 @@ def user_bot_owner(func):
 
     return is_user_bot_owner
 
+
 def sendMessage(text: str, bot: Bot, update: Update):
-    return bot.send_message(update.message.chat_id,
-                                    reply_to_message_id=update.message.message_id,
-                                    text=text, parse_mode=ParseMode.HTML)
+    return bot.send_message(
+        update.message.chat_id,
+        reply_to_message_id=update.message.message_id,
+        text=text,
+        parse_mode=ParseMode.HTML,
+    )

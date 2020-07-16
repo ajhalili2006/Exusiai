@@ -40,8 +40,9 @@ def extract_user(message: Message, args: List[str]) -> Optional[int]:
     return extract_user_and_text(message, args)[0]
 
 
-def extract_user_and_text(message: Message,
-                          args: List[str]) -> (Optional[int], Optional[str]):
+def extract_user_and_text(
+    message: Message, args: List[str]
+) -> (Optional[int], Optional[str]):
     chat = message.chat
     prev_message = message.reply_to_message
     split_text = message.text.split(None, 1)
@@ -60,17 +61,16 @@ def extract_user_and_text(message: Message,
         ent = None
 
     # if entity offset matches (command end/text start) then all good
-    if entities and ent and ent.offset == len(
-            message.text) - len(text_to_parse):
+    if entities and ent and ent.offset == len(message.text) - len(text_to_parse):
         ent = entities[0]
         user_id = ent.user.id
-        text = message.text[ent.offset + ent.length:]
+        text = message.text[ent.offset + ent.length :]
 
-    elif len(args) >= 1 and args[0][0] == '@':
+    elif len(args) >= 1 and args[0][0] == "@":
         user = args[0]
         user_id = get_user_id(user)
         if not user_id:
-            message.reply_text(tld(chat.id, 'helpers_user_not_in_db'))
+            message.reply_text(tld(chat.id, "helpers_user_not_in_db"))
             return None, None
 
         else:
@@ -95,7 +95,7 @@ def extract_user_and_text(message: Message,
         message.bot.get_chat(user_id)
     except BadRequest as excp:
         if excp.message in ("User_id_invalid", "Chat not found"):
-            message.reply_text(tld(chat.id, 'helpers_user_not_in_db'))
+            message.reply_text(tld(chat.id, "helpers_user_not_in_db"))
         else:
             LOGGER.exception("Exception %s on user %s", excp.message, user_id)
 
@@ -105,5 +105,8 @@ def extract_user_and_text(message: Message,
 
 
 def extract_text(message) -> str:
-    return message.text or message.caption or (message.sticker.emoji
-                                               if message.sticker else None)
+    return (
+        message.text
+        or message.caption
+        or (message.sticker.emoji if message.sticker else None)
+    )

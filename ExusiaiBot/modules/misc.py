@@ -27,7 +27,14 @@ from covid import Covid
 
 import requests
 from telegram import Message, Chat, Update, Bot, MessageEntity
-from telegram import ParseMode, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton, MAX_MESSAGE_LENGTH, Update
+from telegram import (
+    ParseMode,
+    ReplyKeyboardRemove,
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+    MAX_MESSAGE_LENGTH,
+    Update,
+)
 from telegram.ext import CommandHandler, run_async, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
 from telegram.error import BadRequest
@@ -57,30 +64,38 @@ def get_id(bot: Bot, update: Update, args: List[str]):
     user_id = extract_user(update.effective_message, args)
     chat = update.effective_chat  # type: Optional[Chat]
     if user_id:
-        if update.effective_message.reply_to_message and update.effective_message.reply_to_message.forward_from:
+        if (
+            update.effective_message.reply_to_message
+            and update.effective_message.reply_to_message.forward_from
+        ):
             user1 = update.effective_message.reply_to_message.from_user
             user2 = update.effective_message.reply_to_message.forward_from
             update.effective_message.reply_markdown(
-                tld(chat.id,
-                    "misc_get_id_1").format(escape_markdown(user2.first_name),
-                                            user2.id,
-                                            escape_markdown(user1.first_name),
-                                            user1.id))
+                tld(chat.id, "misc_get_id_1").format(
+                    escape_markdown(user2.first_name),
+                    user2.id,
+                    escape_markdown(user1.first_name),
+                    user1.id,
+                )
+            )
         else:
             user = bot.get_chat(user_id)
             update.effective_message.reply_markdown(
-                tld(chat.id,
-                    "misc_get_id_2").format(escape_markdown(user.first_name),
-                                            user.id))
+                tld(chat.id, "misc_get_id_2").format(
+                    escape_markdown(user.first_name), user.id
+                )
+            )
     else:
         chat = update.effective_chat  # type: Optional[Chat]
         if chat.type == "private":
             update.effective_message.reply_markdown(
-                tld(chat.id, "misc_id_1").format(chat.id))
+                tld(chat.id, "misc_id_1").format(chat.id)
+            )
 
         else:
             update.effective_message.reply_markdown(
-                tld(chat.id, "misc_id_2").format(chat.id))
+                tld(chat.id, "misc_id_2").format(chat.id)
+            )
 
 
 @run_async
@@ -96,10 +111,14 @@ def info(bot: Bot, update: Update, args: List[str]):
         user = msg.from_user
 
     elif not msg.reply_to_message and (
-            not args or
-        (len(args) >= 1 and not args[0].startswith("@")
-         and not args[0].isdigit()
-         and not msg.parse_entities([MessageEntity.TEXT_MENTION]))):
+        not args
+        or (
+            len(args) >= 1
+            and not args[0].startswith("@")
+            and not args[0].isdigit()
+            and not msg.parse_entities([MessageEntity.TEXT_MENTION])
+        )
+    ):
         msg.reply_text(tld(chat.id, "I can't extract a user from this."))
         return
 
@@ -108,19 +127,15 @@ def info(bot: Bot, update: Update, args: List[str]):
 
     text = tld(chat.id, "misc_info_1")
     text += tld(chat.id, "misc_info_id").format(user.id)
-    text += tld(chat.id,
-                "misc_info_first").format(html.escape(user.first_name))
+    text += tld(chat.id, "misc_info_first").format(html.escape(user.first_name))
 
     if user.last_name:
-        text += tld(chat.id,
-                    "misc_info_name").format(html.escape(user.last_name))
+        text += tld(chat.id, "misc_info_name").format(html.escape(user.last_name))
 
     if user.username:
-        text += tld(chat.id,
-                    "misc_info_username").format(html.escape(user.username))
+        text += tld(chat.id, "misc_info_username").format(html.escape(user.username))
 
-    text += tld(chat.id,
-                "misc_info_user_link").format(mention_html(user.id, "link"))
+    text += tld(chat.id, "misc_info_user_link").format(mention_html(user.id, "link"))
 
     if user.id == OWNER_ID:
         text += tld(chat.id, "misc_info_is_owner")
@@ -163,28 +178,31 @@ def reply_keyboard_remove(bot: Bot, update: Update):
     reply_markup = ReplyKeyboardRemove(remove_keyboard=True)
     old_message = bot.send_message(
         chat_id=update.message.chat_id,
-        text='trying',  # This text will not get translated
+        text="trying",  # This text will not get translated
         reply_markup=reply_markup,
-        reply_to_message_id=update.message.message_id)
-    bot.delete_message(chat_id=update.message.chat_id,
-                       message_id=old_message.message_id)
+        reply_to_message_id=update.message.message_id,
+    )
+    bot.delete_message(
+        chat_id=update.message.chat_id, message_id=old_message.message_id
+    )
 
 
 @run_async
 def gdpr(bot: Bot, update: Update):
-    update.effective_message.reply_text(
-        tld(update.effective_chat.id, "misc_gdpr"))
+    update.effective_message.reply_text(tld(update.effective_chat.id, "misc_gdpr"))
     for mod in GDPR:
         mod.__gdpr__(update.effective_user.id)
 
-    update.effective_message.reply_text(tld(update.effective_chat.id,
-                                            "send_gdpr"),
-                                        parse_mode=ParseMode.MARKDOWN)
+    update.effective_message.reply_text(
+        tld(update.effective_chat.id, "send_gdpr"), parse_mode=ParseMode.MARKDOWN
+    )
+
 
 def shell(command):
-    process = Popen(command,stdout=PIPE,shell=True,stderr=PIPE)
-    stdout,stderr = process.communicate()
-    return (stdout,stderr)
+    process = Popen(command, stdout=PIPE, shell=True, stderr=PIPE)
+    stdout, stderr = process.communicate()
+    return (stdout, stderr)
+
 
 def ram(bot: Bot, update: Update):
     cmd = "ps -o pid"
@@ -192,15 +210,28 @@ def ram(bot: Bot, update: Update):
     processes = output.splitlines()
     mem = 0
     for p in processes[1:]:
-        mem += int(float(shell("ps u -p {} | awk ".format(p)+"'{sum=sum+$6}; END {print sum/1024}'")[0].decode().rstrip().replace("'","")))
-    update.message.reply_text(f"RAM usage = <code>{mem} MiB</code>", parse_mode=ParseMode.HTML)
+        mem += int(
+            float(
+                shell(
+                    "ps u -p {} | awk ".format(p)
+                    + "'{sum=sum+$6}; END {print sum/1024}'"
+                )[0]
+                .decode()
+                .rstrip()
+                .replace("'", "")
+            )
+        )
+    update.message.reply_text(
+        f"RAM usage = <code>{mem} MiB</code>", parse_mode=ParseMode.HTML
+    )
 
 
 @run_async
 def markdown_help(bot: Bot, update: Update):
     chat = update.effective_chat  # type: Optional[Chat]
-    update.effective_message.reply_text(tld(chat.id, "misc_md_list"),
-                                        parse_mode=ParseMode.HTML)
+    update.effective_message.reply_text(
+        tld(chat.id, "misc_md_list"), parse_mode=ParseMode.HTML
+    )
     update.effective_message.reply_text(tld(chat.id, "misc_md_try"))
     update.effective_message.reply_text(tld(chat.id, "misc_md_help"))
 
@@ -210,33 +241,46 @@ def stats(bot: Bot, update: Update):
     update.effective_message.reply_text(
         # This text doesn't get translated as it is internal message.
         "*Current Stats:*\n" + "\n".join([mod.__stats__() for mod in STATS]),
-        parse_mode=ParseMode.MARKDOWN)
+        parse_mode=ParseMode.MARKDOWN,
+    )
 
 
 @run_async
 def github(bot: Bot, update: Update):
     message = update.effective_message
-    text = message.text[len('/git '):]
-    usr = get(f'https://api.github.com/users/{text}').json()
-    if usr.get('login'):
+    text = message.text[len("/git ") :]
+    usr = get(f"https://api.github.com/users/{text}").json()
+    if usr.get("login"):
         text = f"*Username:* [{usr['login']}](https://github.com/{usr['login']})"
 
         whitelist = [
-            'name', 'id', 'type', 'location', 'blog', 'bio', 'followers',
-            'following', 'hireable', 'public_gists', 'public_repos', 'email',
-            'company', 'updated_at', 'created_at'
+            "name",
+            "id",
+            "type",
+            "location",
+            "blog",
+            "bio",
+            "followers",
+            "following",
+            "hireable",
+            "public_gists",
+            "public_repos",
+            "email",
+            "company",
+            "updated_at",
+            "created_at",
         ]
 
         difnames = {
-            'id': 'Account ID',
-            'type': 'Account type',
-            'created_at': 'Account created at',
-            'updated_at': 'Last updated',
-            'public_repos': 'Public Repos',
-            'public_gists': 'Public Gists'
+            "id": "Account ID",
+            "type": "Account type",
+            "created_at": "Account created at",
+            "updated_at": "Last updated",
+            "public_repos": "Public Repos",
+            "public_gists": "Public Gists",
         }
 
-        goaway = [None, 0, 'null', '']
+        goaway = [None, 0, "null", ""]
 
         for x, y in usr.items():
             if x in whitelist:
@@ -245,41 +289,41 @@ def github(bot: Bot, update: Update):
                 else:
                     x = x.title()
 
-                if x == 'Account created at' or x == 'Last updated':
+                if x == "Account created at" or x == "Last updated":
                     y = datetime.strptime(y, "%Y-%m-%dT%H:%M:%SZ")
 
                 if y not in goaway:
-                    if x == 'Blog':
+                    if x == "Blog":
                         x = "Website"
                         y = f"[Here!]({y})"
-                        text += ("\n*{}:* {}".format(x, y))
+                        text += "\n*{}:* {}".format(x, y)
                     else:
-                        text += ("\n*{}:* `{}`".format(x, y))
+                        text += "\n*{}:* `{}`".format(x, y)
         reply_text = text
     else:
         reply_text = "User not found. Make sure you entered valid username!"
-    message.reply_text(reply_text,
-                       parse_mode=ParseMode.MARKDOWN,
-                       disable_web_page_preview=True)
+    message.reply_text(
+        reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+    )
 
 
 @run_async
 def repo(bot: Bot, update: Update, args: List[str]):
     message = update.effective_message
-    text = message.text[len('/repo '):]
-    usr = get(f'https://api.github.com/users/{text}/repos?per_page=40').json()
+    text = message.text[len("/repo ") :]
+    usr = get(f"https://api.github.com/users/{text}/repos?per_page=40").json()
     reply_text = "*Repo*\n"
     for i in range(len(usr)):
         reply_text += f"[{usr[i]['name']}]({usr[i]['html_url']})\n"
-    message.reply_text(reply_text,
-                       parse_mode=ParseMode.MARKDOWN,
-                       disable_web_page_preview=True)
+    message.reply_text(
+        reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+    )
 
 
 @run_async
 def paste(bot: Bot, update: Update, args: List[str]):
     chat = update.effective_chat  # type: Optional[Chat]
-    BURL = 'https://del.dog'
+    BURL = "https://del.dog"
     message = update.effective_message
     if message.reply_to_message:
         data = message.reply_to_message.text
@@ -289,7 +333,7 @@ def paste(bot: Bot, update: Update, args: List[str]):
         message.reply_text(tld(chat.id, "misc_paste_invalid"))
         return
 
-    r = requests.post(f'{BURL}/documents', data=data.encode('utf-8'))
+    r = requests.post(f"{BURL}/documents", data=data.encode("utf-8"))
 
     if r.status_code == 404:
         update.effective_message.reply_text(tld(chat.id, "misc_paste_404"))
@@ -298,22 +342,22 @@ def paste(bot: Bot, update: Update, args: List[str]):
     res = r.json()
 
     if r.status_code != 200:
-        update.effective_message.reply_text(res['message'])
+        update.effective_message.reply_text(res["message"])
         r.raise_for_status()
 
-    key = res['key']
-    if res['isUrl']:
+    key = res["key"]
+    if res["isUrl"]:
         reply = tld(chat.id, "misc_paste_success").format(BURL, key, BURL, key)
     else:
-        reply = f'{BURL}/{key}'
-    update.effective_message.reply_text(reply,
-                                        parse_mode=ParseMode.MARKDOWN,
-                                        disable_web_page_preview=True)
+        reply = f"{BURL}/{key}"
+    update.effective_message.reply_text(
+        reply, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+    )
 
 
 @run_async
 def get_paste_content(bot: Bot, update: Update, args: List[str]):
-    BURL = 'https://del.dog'
+    BURL = "https://del.dog"
     message = update.effective_message
     chat = update.effective_chat  # type: Optional[Chat]
 
@@ -323,37 +367,37 @@ def get_paste_content(bot: Bot, update: Update, args: List[str]):
         message.reply_text(tld(chat.id, "misc_get_paste_invalid"))
         return
 
-    format_normal = f'{BURL}/'
-    format_view = f'{BURL}/v/'
+    format_normal = f"{BURL}/"
+    format_view = f"{BURL}/v/"
 
     if key.startswith(format_view):
-        key = key[len(format_view):]
+        key = key[len(format_view) :]
     elif key.startswith(format_normal):
-        key = key[len(format_normal):]
+        key = key[len(format_normal) :]
 
-    r = requests.get(f'{BURL}/raw/{key}')
+    r = requests.get(f"{BURL}/raw/{key}")
 
     if r.status_code != 200:
         try:
             res = r.json()
-            update.effective_message.reply_text(res['message'])
+            update.effective_message.reply_text(res["message"])
         except Exception:
             if r.status_code == 404:
-                update.effective_message.reply_text(
-                    tld(chat.id, "misc_paste_404"))
+                update.effective_message.reply_text(tld(chat.id, "misc_paste_404"))
             else:
                 update.effective_message.reply_text(
-                    tld(chat.id, "misc_get_pasted_unknown"))
+                    tld(chat.id, "misc_get_pasted_unknown")
+                )
         r.raise_for_status()
 
-    update.effective_message.reply_text('```' + escape_markdown(r.text) +
-                                        '```',
-                                        parse_mode=ParseMode.MARKDOWN)
+    update.effective_message.reply_text(
+        "```" + escape_markdown(r.text) + "```", parse_mode=ParseMode.MARKDOWN
+    )
 
 
 @run_async
 def get_paste_stats(bot: Bot, update: Update, args: List[str]):
-    BURL = 'https://del.dog'
+    BURL = "https://del.dog"
     message = update.effective_message
     chat = update.effective_chat  # type: Optional[Chat]
 
@@ -363,44 +407,43 @@ def get_paste_stats(bot: Bot, update: Update, args: List[str]):
         message.reply_text(tld(chat.id, "misc_get_paste_invalid"))
         return
 
-    format_normal = f'{BURL}/'
-    format_view = f'{BURL}/v/'
+    format_normal = f"{BURL}/"
+    format_view = f"{BURL}/v/"
 
     if key.startswith(format_view):
-        key = key[len(format_view):]
+        key = key[len(format_view) :]
     elif key.startswith(format_normal):
-        key = key[len(format_normal):]
+        key = key[len(format_normal) :]
 
-    r = requests.get(f'{BURL}/documents/{key}')
+    r = requests.get(f"{BURL}/documents/{key}")
 
     if r.status_code != 200:
         try:
             res = r.json()
-            update.effective_message.reply_text(res['message'])
+            update.effective_message.reply_text(res["message"])
         except Exception:
             if r.status_code == 404:
-                update.effective_message.reply_text(
-                    tld(chat.id, "misc_paste_404"))
+                update.effective_message.reply_text(tld(chat.id, "misc_paste_404"))
             else:
                 update.effective_message.reply_text(
-                    tld(chat.id, "misc_get_pasted_unknown"))
+                    tld(chat.id, "misc_get_pasted_unknown")
+                )
         r.raise_for_status()
 
-    document = r.json()['document']
-    key = document['_id']
-    views = document['viewCount']
-    reply = f'Stats for **[/{key}]({BURL}/{key})**:\nViews: `{views}`'
+    document = r.json()["document"]
+    key = document["_id"]
+    views = document["viewCount"]
+    reply = f"Stats for **[/{key}]({BURL}/{key})**:\nViews: `{views}`"
     update.effective_message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
 
 
 @run_async
 def ud(bot: Bot, update: Update):
     message = update.effective_message
-    text = message.text[len('/ud '):]
-    if text == '':
+    text = message.text[len("/ud ") :]
+    if text == "":
         text = "Cockblocked By Steve Jobs"
-    results = get(
-        f'http://api.urbandictionary.com/v0/define?term={text}').json()
+    results = get(f"http://api.urbandictionary.com/v0/define?term={text}").json()
     reply_text = f'Word: {text}\nDefinition: {results["list"][0]["definition"]}'
     message.reply_text(reply_text)
 
@@ -414,30 +457,39 @@ def wiki(bot: Bot, update: Update):
     else:
         try:
             pertama = update.effective_message.reply_text("🔄 Loading...")
-            keyboard = InlineKeyboardMarkup([[
-                InlineKeyboardButton(text="🔧 More Info...",
-                                     url=wikipedia.page(kueri).url)
-            ]])
-            bot.editMessageText(chat_id=update.effective_chat.id,
-                                message_id=pertama.message_id,
-                                text=wikipedia.summary(kueri, sentences=10),
-                                reply_markup=keyboard)
+            keyboard = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="🔧 More Info...", url=wikipedia.page(kueri).url
+                        )
+                    ]
+                ]
+            )
+            bot.editMessageText(
+                chat_id=update.effective_chat.id,
+                message_id=pertama.message_id,
+                text=wikipedia.summary(kueri, sentences=10),
+                reply_markup=keyboard,
+            )
         except wikipedia.PageError as e:
             update.effective_message.reply_text("⚠ Error: {}".format(e))
         except BadRequest as et:
             update.effective_message.reply_text("⚠ Error: {}".format(et))
         except wikipedia.exceptions.DisambiguationError as eet:
             update.effective_message.reply_text(
-                "⚠ Error\n There are too many query! Express it more!\nPossible query result:\n{}"
-                .format(eet))
+                "⚠ Error\n There are too many query! Express it more!\nPossible query result:\n{}".format(
+                    eet
+                )
+            )
 
 
 @run_async
 def covid(bot: Bot, update: Update):
     message = update.effective_message
     chat = update.effective_chat
-    country = str(message.text[len(f'/covid '):])
-    if country == '':
+    country = str(message.text[len(f"/covid ") :])
+    if country == "":
         country = "world"
     if country.lower() in ["south korea", "korea"]:
         country = "s. korea"
@@ -459,21 +511,28 @@ def covid(bot: Bot, update: Update):
         total_tests = "N/A"
     else:
         total_tests = format_integer(c_case["total_tests"])
-    reply = tld(chat.id,
-                "misc_covid").format(country, confirmed, new_cases, active,
-                                     critical, deaths, new_deaths, recovered,
-                                     total_tests)
+    reply = tld(chat.id, "misc_covid").format(
+        country,
+        confirmed,
+        new_cases,
+        active,
+        critical,
+        deaths,
+        new_deaths,
+        recovered,
+        total_tests,
+    )
     message.reply_markdown(reply)
 
 
-def format_integer(number, thousand_separator=','):
+def format_integer(number, thousand_separator=","):
     def reverse(string):
         string = "".join(reversed(string))
         return string
 
     s = reverse(str(number))
     count = 0
-    result = ''
+    result = ""
     for char in s:
         count = count + 1
         if count % 3 == 0:
@@ -485,20 +544,24 @@ def format_integer(number, thousand_separator=','):
             result = char + result
     return result
 
+
 @run_async
 def ping(bot: Bot, update: Update):
     msg = update.effective_message
     start_time = time.time()
     message = msg.reply_text("Pinging...")
     end_time = time.time()
-    ping_time = round((end_time - start_time)*1000, 3)
-    message.edit_text("*Pong!!!*\n`{}ms`".format(ping_time), parse_mode=ParseMode.MARKDOWN)
-	
+    ping_time = round((end_time - start_time) * 1000, 3)
+    message.edit_text(
+        "*Pong!!!*\n`{}ms`".format(ping_time), parse_mode=ParseMode.MARKDOWN
+    )
+
+
 @run_async
 def sudo_list(bot: Bot, update: Update):
     reply = "<b>Sudo Users:</b>\n"
     for sudo in SUDO_USERS:
-        user_id = int(sudo) # Ensure int
+        user_id = int(sudo)  # Ensure int
         user = bot.get_chat(user_id)
         first_name = user.first_name
         reply += """• <a href="tg://user?id={}">{}</a>\n""".format(user_id, first_name)
@@ -509,7 +572,7 @@ def sudo_list(bot: Bot, update: Update):
 def support_list(bot: Bot, update: Update):
     reply = "<b>Support Users:</b>\n"
     for support in SUPPORT_USERS:
-        user_id = int(support) # Ensure int
+        user_id = int(support)  # Ensure int
         user = bot.get_chat(user_id)
         first_name = user.first_name.replace(">", "&gt;")
         first_name = first_name.replace("<", "&lt;")
@@ -518,59 +581,59 @@ def support_list(bot: Bot, update: Update):
 
 
 def convert(speed):
-	return round(int(speed)/1048576, 2) # bits to megabits
+    return round(int(speed) / 1048576, 2)  # bits to megabits
 
-@run_async	
+
+@run_async
 def speed_test(bot: Bot, update: Update):
-	test = speedtest.Speedtest()
-	test.get_best_server()
-	test.download()
-	test.upload()
-	result = test.results.dict()
-	
-	reply = "*Speedtest Results:*\n"
-	reply += f"Download: `{convert(result['download'])} Mb/s`\n"
-	reply += f"Upload: `{convert(result['upload'])} Mb/s`\n"
-	reply += f"Ping: `{result['ping']}`\n"
-	reply += f"ISP: `{result['client']['isp']}`"
-	update.effective_message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)  
+    test = speedtest.Speedtest()
+    test.get_best_server()
+    test.download()
+    test.upload()
+    result = test.results.dict()
+
+    reply = "*Speedtest Results:*\n"
+    reply += f"Download: `{convert(result['download'])} Mb/s`\n"
+    reply += f"Upload: `{convert(result['upload'])} Mb/s`\n"
+    reply += f"Ping: `{result['ping']}`\n"
+    reply += f"ISP: `{result['client']['isp']}`"
+    update.effective_message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
 
 
 __help__ = True
 
-ID_HANDLER = DisableAbleCommandHandler("id",
-                                       get_id,
-                                       pass_args=True,
-                                       admin_ok=True)
+ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True, admin_ok=True)
 PING_HANDLER = DisableAbleCommandHandler("ping", ping)
-SUDO_LIST_HANDLER = CommandHandler("sudolist", sudo_list, filters=CustomFilters.sudo_filter | CustomFilters.support_filter)
-SUPPORT_LIST_HANDLER = CommandHandler("supportlist", support_list, filters=CustomFilters.sudo_filter | CustomFilters.support_filter)
-SPEEDTEST_HANDLER = CommandHandler("speed", speed_test, filters=CustomFilters.sudo_filter)
+SUDO_LIST_HANDLER = CommandHandler(
+    "sudolist",
+    sudo_list,
+    filters=CustomFilters.sudo_filter | CustomFilters.support_filter,
+)
+SUPPORT_LIST_HANDLER = CommandHandler(
+    "supportlist",
+    support_list,
+    filters=CustomFilters.sudo_filter | CustomFilters.support_filter,
+)
+SPEEDTEST_HANDLER = CommandHandler(
+    "speed", speed_test, filters=CustomFilters.sudo_filter
+)
 IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID))
-INFO_HANDLER = DisableAbleCommandHandler("info",
-                                         info,
-                                         pass_args=True,
-                                         admin_ok=True)
+INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True, admin_ok=True)
 GITHUB_HANDLER = DisableAbleCommandHandler("git", github, admin_ok=True)
-REPO_HANDLER = DisableAbleCommandHandler("repo",
-                                         repo,
-                                         pass_args=True,
-                                         admin_ok=True)
+REPO_HANDLER = DisableAbleCommandHandler("repo", repo, pass_args=True, admin_ok=True)
 
 ECHO_HANDLER = CommandHandler("echo", echo, filters=Filters.user(OWNER_ID))
-MD_HELP_HANDLER = CommandHandler("markdownhelp",
-                                 markdown_help,
-                                 filters=Filters.private)
+MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help, filters=Filters.private)
 
 STATS_HANDLER = CommandHandler("stats", stats, filters=Filters.user(OWNER_ID))
 GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private)
 PASTE_HANDLER = DisableAbleCommandHandler("paste", paste, pass_args=True)
-GET_PASTE_HANDLER = DisableAbleCommandHandler("getpaste",
-                                              get_paste_content,
-                                              pass_args=True)
-PASTE_STATS_HANDLER = DisableAbleCommandHandler("pastestats",
-                                                get_paste_stats,
-                                                pass_args=True)
+GET_PASTE_HANDLER = DisableAbleCommandHandler(
+    "getpaste", get_paste_content, pass_args=True
+)
+PASTE_STATS_HANDLER = DisableAbleCommandHandler(
+    "pastestats", get_paste_stats, pass_args=True
+)
 UD_HANDLER = DisableAbleCommandHandler("ud", ud)
 WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
 COVID_HANDLER = DisableAbleCommandHandler("covid", covid, admin_ok=True)
@@ -596,6 +659,7 @@ dispatcher.add_handler(GDPR_HANDLER)
 dispatcher.add_handler(GITHUB_HANDLER)
 dispatcher.add_handler(REPO_HANDLER)
 dispatcher.add_handler(
-    DisableAbleCommandHandler("removebotkeyboard", reply_keyboard_remove))
+    DisableAbleCommandHandler("removebotkeyboard", reply_keyboard_remove)
+)
 dispatcher.add_handler(WIKI_HANDLER)
 dispatcher.add_handler(COVID_HANDLER)

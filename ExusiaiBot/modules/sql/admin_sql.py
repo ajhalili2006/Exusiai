@@ -42,8 +42,7 @@ CHAT_LOCK = threading.RLock()
 
 def command_reaction(chat_id: Union[str, int]) -> bool:
     try:
-        chat_setting = SESSION.query(CommandReactionChatSettings).get(
-            str(chat_id))
+        chat_setting = SESSION.query(CommandReactionChatSettings).get(str(chat_id))
         if chat_setting:
             return chat_setting.comm_reaction
         return False
@@ -53,8 +52,7 @@ def command_reaction(chat_id: Union[str, int]) -> bool:
 
 def set_command_reaction(chat_id: Union[int, str], setting: bool):
     with CHAT_LOCK:
-        chat_setting = SESSION.query(CommandReactionChatSettings).get(
-            str(chat_id))
+        chat_setting = SESSION.query(CommandReactionChatSettings).get(str(chat_id))
         if not chat_setting:
             chat_setting = CommandReactionChatSettings(chat_id)
 
@@ -65,8 +63,11 @@ def set_command_reaction(chat_id: Union[int, str], setting: bool):
 
 def migrate_chat(old_chat_id, new_chat_id):
     with CHAT_LOCK:
-        chat_notes = SESSION.query(CommandReactionChatSettings).filter(
-            CommandReactionChatSettings.chat_id == str(old_chat_id)).all()
+        chat_notes = (
+            SESSION.query(CommandReactionChatSettings)
+            .filter(CommandReactionChatSettings.chat_id == str(old_chat_id))
+            .all()
+        )
         for note in chat_notes:
             note.chat_id = str(new_chat_id)
         SESSION.commit()

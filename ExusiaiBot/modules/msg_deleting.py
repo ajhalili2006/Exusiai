@@ -15,7 +15,10 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from ExusiaiBot.events import register
-from ExusiaiBot.modules.helper_funcs.telethon.chat_status import user_is_admin, can_delete_messages
+from ExusiaiBot.modules.helper_funcs.telethon.chat_status import (
+    user_is_admin,
+    can_delete_messages,
+)
 from ExusiaiBot.modules.tr_engine.strings import tld
 
 
@@ -52,7 +55,7 @@ async def purge(event):
 
     await event.client.delete_messages(chat, msgs)
     text = tld(chat, "purge_msg_success")
-    await event.respond(text, parse_mode='md')
+    await event.respond(text, parse_mode="md")
 
 
 @register(pattern="^/del$")
