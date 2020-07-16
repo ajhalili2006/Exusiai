@@ -47,22 +47,22 @@ async def los(event):
         device_ = event.pattern_match.group(1)
         device = urllib.parse.quote_plus(device_)
     except Exception:
-        device = ''
+        device = ""
 
-    if device == '':
+    if device == "":
         reply_text = tld(chat_id, "cmd_example").format("los")
         await event.reply(reply_text, link_preview=False)
         return
 
-    fetch = get(f'https://download.lineageos.org/api/v1/{device}/nightly/*')
-    if fetch.status_code == 200 and len(fetch.json()['response']) != 0:
+    fetch = get(f"https://download.lineageos.org/api/v1/{device}/nightly/*")
+    if fetch.status_code == 200 and len(fetch.json()["response"]) != 0:
         usr = json.loads(fetch.content)
-        response = usr['response'][0]
-        filename = response['filename']
-        url = response['url']
-        buildsize_a = response['size']
+        response = usr["response"][0]
+        filename = response["filename"]
+        url = response["url"]
+        buildsize_a = response["size"]
         buildsize_b = sizee(int(buildsize_a))
-        version = response['version']
+        version = response["version"]
 
         reply_text = tld(chat_id, "download").format(filename, url)
         reply_text += tld(chat_id, "build_size").format(buildsize_b)
@@ -87,7 +87,7 @@ async def evo(event):
         device_ = event.pattern_match.group(1)
         device = urllib.parse.quote_plus(device_)
     except Exception:
-        device = ''
+        device = ""
 
     if device == "example":
         reply_text = tld(chat_id, "err_example_device")
@@ -100,13 +100,13 @@ async def evo(event):
     if device == "x01bd":
         device = "X01BD"
 
-    if device == '':
+    if device == "":
         reply_text = tld(chat_id, "cmd_example").format("evo")
         await event.reply(reply_text, link_preview=False)
         return
 
     fetch = get(
-        f'https://raw.githubusercontent.com/Evolution-X-Devices/official_devices/master/builds/{device}.json'
+        f"https://raw.githubusercontent.com/Evolution-X-Devices/official_devices/master/builds/{device}.json"
     )
 
     if fetch.status_code in [500, 504, 505]:
@@ -118,19 +118,20 @@ async def evo(event):
     if fetch.status_code == 200:
         try:
             usr = json.loads(fetch.content)
-            filename = usr['filename']
-            url = usr['url']
-            version = usr['version']
-            maintainer = usr['maintainer']
-            maintainer_url = usr['telegram_username']
-            size_a = usr['size']
+            filename = usr["filename"]
+            url = usr["url"]
+            version = usr["version"]
+            maintainer = usr["maintainer"]
+            maintainer_url = usr["telegram_username"]
+            size_a = usr["size"]
             size_b = sizee(int(size_a))
 
             reply_text = tld(chat_id, "download").format(filename, url)
             reply_text += tld(chat_id, "build_size").format(size_b)
             reply_text += tld(chat_id, "android_version").format(version)
             reply_text += tld(chat_id, "maintainer").format(
-                f"[{maintainer}](https://t.me/{maintainer_url})")
+                f"[{maintainer}](https://t.me/{maintainer_url})"
+            )
 
             keyboard = [custom.Button.url(tld(chat_id, "btn_dl"), f"{url}")]
             await event.reply(reply_text, buttons=keyboard, link_preview=False)
@@ -161,8 +162,8 @@ async def phh(event):
     reply_text = tld(chat_id, "phh_releases")
     for i in range(len(usr)):
         try:
-            name = usr['assets'][i]['name']
-            url = usr['assets'][i]['browser_download_url']
+            name = usr["assets"][i]["name"]
+            url = usr["assets"][i]["browser_download_url"]
             reply_text += f"[{name}]({url})\n"
         except IndexError:
             continue
@@ -179,19 +180,19 @@ async def bootleggers(event):
         codename_ = event.pattern_match.group(1)
         codename = urllib.parse.quote_plus(codename_)
     except Exception:
-        codename = ''
+        codename = ""
 
-    if codename == '':
+    if codename == "":
         reply_text = tld(chat_id, "cmd_example").format("bootleggers")
         await event.reply(reply_text, link_preview=False)
         return
 
-    fetch = get('https://bootleggersrom-devices.github.io/api/devices.json')
+    fetch = get("https://bootleggersrom-devices.github.io/api/devices.json")
     if fetch.status_code == 200:
         nestedjson = json.loads(fetch.content)
 
-        if codename.lower() == 'x00t':
-            devicetoget = 'X00T'
+        if codename.lower() == "x00t":
+            devicetoget = "X00T"
         else:
             devicetoget = codename.lower()
 
@@ -203,14 +204,14 @@ async def bootleggers(event):
 
         if devicetoget in devices:
             for oh, baby in devices[devicetoget].items():
-                dontneedlist = ['id', 'filename', 'download', 'xdathread']
+                dontneedlist = ["id", "filename", "download", "xdathread"]
                 peaksmod = {
-                    'fullname': 'Device name',
-                    'buildate': 'Build date',
-                    'buildsize': 'Build size',
-                    'downloadfolder': 'SourceForge folder',
-                    'mirrorlink': 'Mirror link',
-                    'xdathread': 'XDA thread'
+                    "fullname": "Device name",
+                    "buildate": "Build date",
+                    "buildsize": "Build size",
+                    "downloadfolder": "SourceForge folder",
+                    "mirrorlink": "Mirror link",
+                    "xdathread": "XDA thread",
                 }
                 if baby and oh not in dontneedlist:
                     if oh in peaksmod:
@@ -218,19 +219,20 @@ async def bootleggers(event):
                     else:
                         oh = oh.title()
 
-                    if oh == 'SourceForge folder':
+                    if oh == "SourceForge folder":
                         reply_text += f"\n**{oh}:** [Here]({baby})\n"
-                    elif oh == 'Mirror link':
+                    elif oh == "Mirror link":
                         if not baby == "Error404":
                             reply_text += f"\n**{oh}:** [Here]({baby})\n"
                     else:
                         reply_text += f"\n**{oh}:** `{baby}`"
 
             reply_text += tld(chat_id, "xda_thread").format(
-                devices[devicetoget]['xdathread'])
+                devices[devicetoget]["xdathread"]
+            )
             reply_text += tld(chat_id, "download").format(
-                devices[devicetoget]['filename'],
-                devices[devicetoget]['download'])
+                devices[devicetoget]["filename"], devices[devicetoget]["download"]
+            )
         else:
             reply_text = tld(chat_id, "err_not_found")
 
@@ -244,13 +246,11 @@ async def magisk(event):
     if event.from_id == None:
         return
 
-    url = 'https://raw.githubusercontent.com/topjohnwu/magisk_files/'
-    releases = '**Latest Magisk Releases:**\n'
-    variant = [
-        'master/stable', 'master/beta', 'canary/release', 'canary/debug'
-    ]
+    url = "https://raw.githubusercontent.com/topjohnwu/magisk_files/"
+    releases = "**Latest Magisk Releases:**\n"
+    variant = ["master/stable", "master/beta", "canary/release", "canary/debug"]
     for variants in variant:
-        fetch = get(url + variants + '.json')
+        fetch = get(url + variants + ".json")
         data = json.loads(fetch.content)
         if variants == "master/stable":
             name = "**Stable**"
@@ -269,12 +269,16 @@ async def magisk(event):
             cc = 1
             branch = "canary"
 
-        releases += f'{name}: [ZIP v{data["magisk"]["version"]}]({data["magisk"]["link"]}) | ' \
-                    f'[APK v{data["app"]["version"]}]({data["app"]["link"]}) | '
+        releases += (
+            f'{name}: [ZIP v{data["magisk"]["version"]}]({data["magisk"]["link"]}) | '
+            f'[APK v{data["app"]["version"]}]({data["app"]["link"]}) | '
+        )
 
         if cc == 1:
-            releases += f'[Uninstaller]({data["uninstaller"]["link"]}) | ' \
-                        f'[Changelog]({url}{branch}/notes.md)\n'
+            releases += (
+                f'[Uninstaller]({data["uninstaller"]["link"]}) | '
+                f"[Changelog]({url}{branch}/notes.md)\n"
+            )
         else:
             releases += f'[Uninstaller]({data["uninstaller"]["link"]})\n'
 

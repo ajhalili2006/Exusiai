@@ -41,15 +41,15 @@ def loggable(func):
         if result:
             if chat.type == chat.SUPERGROUP and chat.username:
                 result += tld(chat.id, "log_channel_link").format(
-                    chat.username, message.message_id)
+                    chat.username, message.message_id
+                )
             log_chat = sql.get_chat_log_channel(chat.id)
             if log_chat:
                 send_log(bot, log_chat, chat.id, result)
         elif result == "":
             pass
         else:
-            LOGGER.warning(
-                "%s was set as loggable, but had no return statement.", func)
+            LOGGER.warning("%s was set as loggable, but had no return statement.", func)
 
         return result
 
@@ -61,8 +61,9 @@ def send_log(bot: Bot, log_chat_id: str, orig_chat_id: str, result: str):
         bot.send_message(log_chat_id, result, parse_mode=ParseMode.HTML)
     except BadRequest as excp:
         if excp.message == "Chat not found":
-            bot.send_message(orig_chat_id,
-                             "This log channel has been deleted - unsetting.")
+            bot.send_message(
+                orig_chat_id, "This log channel has been deleted - unsetting."
+            )
             sql.stop_chat_logging(orig_chat_id)
         else:
             LOGGER.warning(excp.message)
@@ -70,8 +71,9 @@ def send_log(bot: Bot, log_chat_id: str, orig_chat_id: str, result: str):
             LOGGER.exception("Could not parse")
 
             bot.send_message(
-                log_chat_id, result +
-                "\n\nFormatting has been disabled due to an unexpected error.")
+                log_chat_id,
+                result + "\n\nFormatting has been disabled due to an unexpected error.",
+            )
 
 
 @run_async
@@ -84,11 +86,12 @@ def logging(bot: Bot, update: Update):
     if log_channel:
         try:
             log_channel_info = bot.get_chat(log_channel)
-            message.reply_text(tld(chat.id,
-                                   "log_channel_grp_curr_conf").format(
-                                       escape_markdown(log_channel_info.title),
-                                       log_channel),
-                               parse_mode=ParseMode.MARKDOWN)
+            message.reply_text(
+                tld(chat.id, "log_channel_grp_curr_conf").format(
+                    escape_markdown(log_channel_info.title), log_channel
+                ),
+                parse_mode=ParseMode.MARKDOWN,
+            )
         except Exception:
             print("Nut")
     else:
@@ -118,21 +121,22 @@ def setlog(bot: Bot, update: Update):
         try:
             bot.send_message(
                 message.forward_from_chat.id,
-                tld(chat.id,
-                    "log_channel_chn_curr_conf").format(chat.title
-                                                        or chat.first_name))
+                tld(chat.id, "log_channel_chn_curr_conf").format(
+                    chat.title or chat.first_name
+                ),
+            )
         except Unauthorized as excp:
             if excp.message == "Forbidden: bot is not a member of the channel chat":
-                bot.send_message(chat.id,
-                                 tld(chat.id, "log_channel_link_success"))
+                bot.send_message(chat.id, tld(chat.id, "log_channel_link_success"))
             else:
                 LOGGER.exception("ERROR in setting the log channel.")
 
         bot.send_message(chat.id, tld(chat.id, "log_channel_link_success"))
 
     else:
-        message.reply_text(tld(chat.id, "log_channel_invalid_message"),
-                           ParseMode.MARKDOWN)
+        message.reply_text(
+            tld(chat.id, "log_channel_invalid_message"), ParseMode.MARKDOWN
+        )
 
 
 @run_async
@@ -146,7 +150,8 @@ def unsetlog(bot: Bot, update: Update):
         try:
             bot.send_message(
                 log_channel,
-                tld(chat.id, "log_channel_unlink_success").format(chat.title))
+                tld(chat.id, "log_channel_unlink_success").format(chat.title),
+            )
             message.reply_text(tld(chat.id, "Log channel has been un-set."))
         except Exception:
             print("Nut")

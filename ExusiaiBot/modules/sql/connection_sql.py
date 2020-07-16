@@ -42,7 +42,7 @@ class Connection(BASE):
 
     def __init__(self, user_id, chat_id):
         self.user_id = user_id
-        self.chat_id = str(chat_id)  #Ensure String
+        self.chat_id = str(chat_id)  # Ensure String
 
 
 class ConnectionHistory(BASE):
@@ -55,9 +55,9 @@ class ConnectionHistory(BASE):
 
     def __init__(self, user_id, chat_id1, chat_id2, chat_id3, updated):
         self.user_id = user_id
-        self.chat_id1 = str(chat_id1)  #Ensure String
-        self.chat_id2 = str(chat_id2)  #Ensure String
-        self.chat_id3 = str(chat_id3)  #Ensure String
+        self.chat_id1 = str(chat_id1)  # Ensure String
+        self.chat_id2 = str(chat_id2)  # Ensure String
+        self.chat_id3 = str(chat_id3)  # Ensure String
         self.updated = updated
 
 
@@ -75,8 +75,7 @@ def add_history(user_id, chat_id1, chat_id2, chat_id3, updated):
         prev = SESSION.query(ConnectionHistory).get((int(user_id)))
         if prev:
             SESSION.delete(prev)
-        history = ConnectionHistory(user_id, chat_id1, chat_id2, chat_id3,
-                                    updated)
+        history = ConnectionHistory(user_id, chat_id1, chat_id2, chat_id3, updated)
         SESSION.add(history)
         SESSION.commit()
 
@@ -90,8 +89,7 @@ def get_history(user_id):
 
 def allow_connect_to_chat(chat_id: Union[str, int]) -> bool:
     try:
-        chat_setting = SESSION.query(ChatAccessConnectionSettings).get(
-            str(chat_id))
+        chat_setting = SESSION.query(ChatAccessConnectionSettings).get(str(chat_id))
         if chat_setting:
             return chat_setting.allow_connect_to_chat
         return False
@@ -101,8 +99,7 @@ def allow_connect_to_chat(chat_id: Union[str, int]) -> bool:
 
 def set_allow_connect_to_chat(chat_id: Union[int, str], setting: bool):
     with CHAT_ACCESS_LOCK:
-        chat_setting = SESSION.query(ChatAccessConnectionSettings).get(
-            str(chat_id))
+        chat_setting = SESSION.query(ChatAccessConnectionSettings).get(str(chat_id))
         if not chat_setting:
             chat_setting = ChatAccessConnectionSettings(chat_id)
 

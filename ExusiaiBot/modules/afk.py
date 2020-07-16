@@ -21,7 +21,10 @@ from telegram.error import BadRequest
 from telegram.ext import Filters, MessageHandler, run_async
 
 from ExusiaiBot import dispatcher
-from ExusiaiBot.modules.disable import DisableAbleCommandHandler, DisableAbleRegexHandler
+from ExusiaiBot.modules.disable import (
+    DisableAbleCommandHandler,
+    DisableAbleRegexHandler,
+)
 from ExusiaiBot.modules.sql import afk_sql as sql
 from ExusiaiBot.modules.users import get_user_id
 
@@ -42,8 +45,7 @@ def afk(bot: Bot, update: Update):
 
     sql.set_afk(update.effective_user.id, reason)
     fname = update.effective_user.first_name
-    update.effective_message.reply_text(
-        tld(chat.id, "user_now_afk").format(fname))
+    update.effective_message.reply_text(tld(chat.id, "user_now_afk").format(fname))
 
 
 @run_async
@@ -57,12 +59,11 @@ def no_longer_afk(bot: Bot, update: Update):
 
     res = sql.rm_afk(user.id)
     if res:
-        if message.new_chat_members:  #dont say msg
+        if message.new_chat_members:  # dont say msg
             return
         firstname = update.effective_user.first_name
         try:
-            message.reply_text(
-                tld(chat.id, "user_no_longer_afk").format(firstname))
+            message.reply_text(tld(chat.id, "user_no_longer_afk").format(firstname))
         except Exception:
             return
 
@@ -73,9 +74,11 @@ def reply_afk(bot: Bot, update: Update):
     userc = update.effective_user
     userc_id = userc.id
     if message.entities and message.parse_entities(
-        [MessageEntity.TEXT_MENTION, MessageEntity.MENTION]):
+        [MessageEntity.TEXT_MENTION, MessageEntity.MENTION]
+    ):
         entities = message.parse_entities(
-            [MessageEntity.TEXT_MENTION, MessageEntity.MENTION])
+            [MessageEntity.TEXT_MENTION, MessageEntity.MENTION]
+        )
 
         chk_users = []
         for ent in entities:
@@ -88,8 +91,9 @@ def reply_afk(bot: Bot, update: Update):
                 chk_users.append(user_id)
 
             elif ent.type == MessageEntity.MENTION:
-                user_id = get_user_id(message.text[ent.offset:ent.offset +
-                                                   ent.length])
+                user_id = get_user_id(
+                    message.text[ent.offset : ent.offset + ent.length]
+                )
                 if not user_id:
                     # Should never happen, since for a user to become AFK they must have spoken. Maybe changed username?
                     return
@@ -101,8 +105,11 @@ def reply_afk(bot: Bot, update: Update):
                 try:
                     chat = bot.get_chat(user_id)
                 except BadRequest:
-                    print("Error: Could not fetch userid {} for AFK module".
-                          format(user_id))
+                    print(
+                        "Error: Could not fetch userid {} for AFK module".format(
+                            user_id
+                        )
+                    )
                     return
                 fst_name = chat.first_name
 
@@ -129,8 +136,7 @@ def check_afk(bot, update, user_id, fst_name, userc_id):
         else:
             if int(userc_id) == int(user_id):
                 return
-            res = tld(chat.id,
-                      "status_afk_reason").format(fst_name, user.reason)
+            res = tld(chat.id, "status_afk_reason").format(fst_name, user.reason)
             update.effective_message.reply_text(res)
 
 
