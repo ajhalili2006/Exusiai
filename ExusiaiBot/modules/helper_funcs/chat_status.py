@@ -19,7 +19,7 @@ from functools import wraps
 
 from telegram import Chat, ChatMember, Update, Bot
 
-from ExusiaiBot import DEL_CMDS, SUDO_USERS, WHITELIST_USERS
+from ExusiaiBot import DEL_CMDS, SUDO_USERS, WHITELIST_USERS, DEV_USERS, OWNER_ID
 import ExusiaiBot.modules.sql.admin_sql as admin_sql
 from ExusiaiBot.modules.tr_engine.strings import tld
 
@@ -52,6 +52,25 @@ def is_user_admin(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
     if not member:
         member = chat.get_member(user_id)
     return member.status in ('administrator', 'creator')
+
+def dev_user(func):
+    @wraps(func)
+    def is_admin(bot: Bot, update: Update, *args, **kwargs):
+        user = update.effective_user  # type: Optional[User]
+        if user.id in DEV_USERS:
+            return func(bot, update, *args, **kwargs)
+
+        elif not user:
+            pass
+
+        elif DEL_CMDS and " " not in update.effective_message.text:
+            update.effective_message.delete()
+
+        else:
+            update.effective_message.reply_text("This command is restricted to my developers only.")
+
+    return is_admin
+
 
 
 def is_bot_admin(chat: Chat,

@@ -4,7 +4,7 @@
 from ExusiaiBot import dispatcher, LOGGER
 from telegram import Bot, Update
 from telegram.ext.dispatcher import run_async
-from ExusiaiBot.modules.helper_funcs.chat_status import bot_admin
+from ExusiaiBot.modules.helper_funcs.chat_status import dev_user
 from ExusiaiBot.modules.helper_funcs.misc import sendMessage
 from telegram.ext import CommandHandler
 from subprocess import Popen, PIPE
@@ -16,7 +16,7 @@ def shell(command):
     stdout,stderr = process.communicate()
     return (stdout,stderr)
 
-@bot_admin
+@dev_user
 @run_async
 def shellExecute(bot: Bot, update: Update):
     cmd = update.message.text.split(' ',maxsplit=1)
