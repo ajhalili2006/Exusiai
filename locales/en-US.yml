@@ -716,11 +716,12 @@ misc_help: |
   - /removebotkeyboard: Got a nasty bot keyboard stuck in your group?
   - /exec <language> <code> [/stdin <stdin>]: Execute a code in a specified language. Send an empty command to get the supported languages.
   - /wiki <keywords>: Get wikipedia articles just using this bot!\n
-  *MyAnimeList // by github.com/rsktg*
-  - /sanime <anime>: returns information about the anime.
-  - /scharacter <character>: returns information about the character.
-  - /smanga <manga>: returns information about the manga.
-  - /upcoming: returns a list of new anime in the upcoming seasons.
+  *#AniList* // by github.com/DragSama
+  Get information about anime, manga or characters from [AniList](anilist.co).
+  *Available commands:*
+  • /anime <anime>*:* returns information about the anime.
+  • /character <character>*:* returns information about the character.
+  • /manga <manga>*:* returns information about the manga.
   *LastFM // by github.com/rsktg*
   - /setuser <username>: sets your last.fm username.
   - /clearuser: removes your last.fm username from the bot's database.
