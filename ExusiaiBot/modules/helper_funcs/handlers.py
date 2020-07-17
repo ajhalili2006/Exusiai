@@ -30,18 +30,17 @@ class CustomCommandHandler(tg.CommandHandler):
 
     def check_update(self, update):
         if isinstance(update, Update) and (
-            update.message or update.edited_message and self.allow_edited
-        ):
+                update.message or update.edited_message and self.allow_edited):
             message = update.message or update.edited_message
 
-            if update.effective_user and int(update.effective_user.id) == 777000:
+            if update.effective_user and int(
+                    update.effective_user.id) == 777000:
                 return False
 
             if message.text and len(message.text) > 1:
                 fst_word = message.text_html.split(None, 1)[0]
                 if len(fst_word) > 1 and any(
-                    fst_word.startswith(start) for start in CMD_STARTERS
-                ):
+                        fst_word.startswith(start) for start in CMD_STARTERS):
                     command = fst_word[1:].split("@")
                     command.append(
                         message.bot.username
@@ -53,10 +52,9 @@ class CustomCommandHandler(tg.CommandHandler):
                     else:
                         res = self.filters(message)
 
-                    return res and (
-                        command[0].lower() in self.command
-                        and command[1].lower() == message.bot.username.lower()
-                    )
+                    return res and (command[0].lower() in self.command
+                                    and command[1].lower()
+                                    == message.bot.username.lower())
 
             return False
 
@@ -72,22 +70,21 @@ class GbanLockHandler(tg.CommandHandler):
 
     def check_update(self, update):
         if isinstance(update, Update) and (
-            update.message or update.edited_message and self.allow_edited
-        ):
+                update.message or update.edited_message and self.allow_edited):
             message = update.message or update.edited_message
             if sql.is_user_gbanned(update.effective_user.id):
                 return False
-            if message.text and message.text.startswith("/") and len(message.text) > 1:
+            if message.text and message.text.startswith("/") and len(
+                    message.text) > 1:
                 first_word = message.text_html.split(None, 1)[0]
                 if len(first_word) > 1 and first_word.startswith("/"):
                     command = first_word[1:].split("@")
                     command.append(
                         message.bot.username
                     )  # in case the command was sent without a username
-                    if not (
-                        command[0].lower() in self.command
-                        and command[1].lower() == message.bot.username.lower()
-                    ):
+                    if not (command[0].lower() in self.command
+                            and command[1].lower()
+                            == message.bot.username.lower()):
                         return False
                     if self.filters is None:
                         res = True

@@ -87,8 +87,7 @@ def broadcast(bot: Bot, update: Update):
 
         update.effective_message.reply_text(
             "Broadcast complete. {} groups failed to receive the message, probably "
-            "due to being kicked.".format(failed)
-        )
+            "due to being kicked.".format(failed))
 
 
 @run_async
@@ -96,7 +95,8 @@ def log_user(bot: Bot, update: Update):
     chat = update.effective_chat
     msg = update.effective_message
 
-    sql.update_user(msg.from_user.id, msg.from_user.username, chat.id, chat.title)
+    sql.update_user(msg.from_user.id, msg.from_user.username, chat.id,
+                    chat.title)
 
     if msg.reply_to_message:
         sql.update_user(
@@ -116,7 +116,8 @@ def snipe(bot: Bot, update: Update, args: List[str]):
         chat_id = str(args[0])
         del args[0]
     except TypeError as excp:
-        update.effective_message.reply_text("Please give me a chat to echo to!")
+        update.effective_message.reply_text(
+            "Please give me a chat to echo to!")
     to_send = " ".join(args)
     if len(to_send) >= 2:
         try:
@@ -145,9 +146,8 @@ def getlink(bot: Bot, update: Update, args: List[int]):
                 invitelink = bot.exportChatInviteLink(chat_id)
                 links += str(chat_id) + ":\n" + invitelink + "\n"
             else:
-                links += (
-                    str(chat_id) + ":\nI don't have access to the invite link." + "\n"
-                )
+                links += (str(chat_id) +
+                          ":\nI don't have access to the invite link." + "\n")
         except BadRequest as excp:
             links += str(chat_id) + ":\n" + excp.message + "\n"
         except TelegramError as excp:
@@ -165,8 +165,7 @@ def leavechat(bot: Bot, update: Update, args: List[int]):
             chat = update.effective_chat
             if chat.type == "private":
                 update.effective_message.reply_text(
-                    "You do not seem to be referring to a chat!"
-                )
+                    "You do not seem to be referring to a chat!")
                 return
             chat_id = chat.id
             reply_text = "`I'll leave this group`"
@@ -180,8 +179,7 @@ def leavechat(bot: Bot, update: Update, args: List[int]):
         except BadRequest as excp:
             if excp.message == "Chat not found":
                 update.effective_message.reply_text(
-                    "It looks like I've been kicked out of the group :p"
-                )
+                    "It looks like I've been kicked out of the group :p")
             else:
                 return
 
@@ -189,17 +187,18 @@ def leavechat(bot: Bot, update: Update, args: List[int]):
         chat = bot.getChat(chat_id)
         titlechat = bot.get_chat(chat_id).title
         reply_text = "`I'll Go Away!`"
-        bot.send_message(
-            chat_id, reply_text, parse_mode="Markdown", disable_web_page_preview=True
-        )
+        bot.send_message(chat_id,
+                         reply_text,
+                         parse_mode="Markdown",
+                         disable_web_page_preview=True)
         bot.leaveChat(chat_id)
-        update.effective_message.reply_text("I'll left group {}".format(titlechat))
+        update.effective_message.reply_text(
+            "I'll left group {}".format(titlechat))
 
     except BadRequest as excp:
         if excp.message == "Chat not found":
             update.effective_message.reply_text(
-                "It looks like I've been kicked out of the group :p"
-            )
+                "It looks like I've been kicked out of the group :p")
         else:
             return
 
@@ -213,8 +212,7 @@ def slist(bot: Bot, update: Update):
         try:
             user = bot.get_chat(user_id)
             name = "[{}](tg://user?id={})".format(
-                user.first_name + (user.last_name or ""), user.id
-            )
+                user.first_name + (user.last_name or ""), user.id)
             if user.username:
                 name = escape_markdown("@" + user.username)
             text1 += "\n - `{}`".format(name)
@@ -225,21 +223,22 @@ def slist(bot: Bot, update: Update):
         try:
             user = bot.get_chat(user_id)
             name = "[{}](tg://user?id={})".format(
-                user.first_name + (user.last_name or ""), user.id
-            )
+                user.first_name + (user.last_name or ""), user.id)
             if user.username:
                 name = escape_markdown("@" + user.username)
             text2 += "\n - `{}`".format(name)
         except BadRequest as excp:
             if excp.message == "Chat not found":
                 text2 += "\n - ({}) - not found".format(user_id)
-    message.reply_text(text1 + "\n" + text2 + "\n", parse_mode=ParseMode.MARKDOWN)
+    message.reply_text(text1 + "\n" + text2 + "\n",
+                       parse_mode=ParseMode.MARKDOWN)
     # message.reply_text(text2 + "\n", parse_mode=ParseMode.MARKDOWN)
 
 
 @run_async
 def chat_checker(bot: Bot, update: Update):
-    if update.effective_message.chat.get_member(bot.id).can_send_messages == False:
+    if update.effective_message.chat.get_member(
+            bot.id).can_send_messages == False:
         bot.leaveChat(update.effective_message.chat.id)
 
 
@@ -251,7 +250,8 @@ def __user_info__(user_id, chat_id):
 
 
 def __stats__():
-    return "• `{}` users, across `{}` chats".format(sql.num_users(), sql.num_chats())
+    return "• `{}` users, across `{}` chats".format(sql.num_users(),
+                                                    sql.num_chats())
 
 
 def __gdpr__(user_id):
@@ -276,33 +276,37 @@ def rem_chat(bot: Bot, update: Update):
             kicked_chats += 1
             sql.rem_chat(id)
     if kicked_chats >= 1:
-        msg.reply_text(
-            "Done! {} chats were removed from the database!".format(kicked_chats)
-        )
+        msg.reply_text("Done! {} chats were removed from the database!".format(
+            kicked_chats))
     else:
         msg.reply_text("No chats had to be removed from the database!")
 
 
-BROADCAST_HANDLER = CommandHandler(
-    "broadcasts", broadcast, filters=Filters.user(OWNER_ID)
-)
+BROADCAST_HANDLER = CommandHandler("broadcasts",
+                                   broadcast,
+                                   filters=Filters.user(OWNER_ID))
 USER_HANDLER = MessageHandler(Filters.all & Filters.group, log_user)
-SNIPE_HANDLER = CommandHandler(
-    "snipe", snipe, pass_args=True, filters=Filters.user(OWNER_ID)
-)
-GETLINK_HANDLER = CommandHandler(
-    "getlink", getlink, pass_args=True, filters=Filters.user(OWNER_ID)
-)
-LEAVECHAT_HANDLER = CommandHandler(
-    "leavechat", leavechat, pass_args=True, filters=Filters.user(OWNER_ID)
-)
-DELETE_CHATS_HANDLER = CommandHandler(
-    "cleanchats", rem_chat, filters=Filters.user(OWNER_ID)
-)
-SLIST_HANDLER = CommandHandler(
-    "slist", slist, filters=CustomFilters.sudo_filter | CustomFilters.support_filter
-)
-CHAT_CHECKER_HANDLER = MessageHandler(Filters.all & Filters.group, chat_checker)
+SNIPE_HANDLER = CommandHandler("snipe",
+                               snipe,
+                               pass_args=True,
+                               filters=Filters.user(OWNER_ID))
+GETLINK_HANDLER = CommandHandler("getlink",
+                                 getlink,
+                                 pass_args=True,
+                                 filters=Filters.user(OWNER_ID))
+LEAVECHAT_HANDLER = CommandHandler("leavechat",
+                                   leavechat,
+                                   pass_args=True,
+                                   filters=Filters.user(OWNER_ID))
+DELETE_CHATS_HANDLER = CommandHandler("cleanchats",
+                                      rem_chat,
+                                      filters=Filters.user(OWNER_ID))
+SLIST_HANDLER = CommandHandler("slist",
+                               slist,
+                               filters=CustomFilters.sudo_filter
+                               | CustomFilters.support_filter)
+CHAT_CHECKER_HANDLER = MessageHandler(Filters.all & Filters.group,
+                                      chat_checker)
 
 dispatcher.add_handler(SNIPE_HANDLER)
 dispatcher.add_handler(GETLINK_HANDLER)

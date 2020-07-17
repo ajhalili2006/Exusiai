@@ -26,8 +26,8 @@ import telegram.ext as tg
 
 # Enable logging
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -54,22 +54,27 @@ if ENV:
     OWNER_USERNAME = os.environ.get("OWNER_USERNAME", None)
 
     try:
-        SUDO_USERS = set(int(x) for x in os.environ.get("SUDO_USERS", "").split())
-        DEV_USERS = set(int(x) for x in os.environ.get("DEV_USERS", "").split())
+        SUDO_USERS = set(
+            int(x) for x in os.environ.get("SUDO_USERS", "").split())
+        DEV_USERS = set(
+            int(x) for x in os.environ.get("DEV_USERS", "").split())
     except ValueError:
-        raise Exception("Your sudo or dev users list does not contain valid integers.")
+        raise Exception(
+            "Your sudo or dev users list does not contain valid integers.")
 
     try:
-        SUPPORT_USERS = set(int(x) for x in os.environ.get("SUPPORT_USERS", "").split())
+        SUPPORT_USERS = set(
+            int(x) for x in os.environ.get("SUPPORT_USERS", "").split())
     except ValueError:
-        raise Exception("Your support users list does not contain valid integers.")
+        raise Exception(
+            "Your support users list does not contain valid integers.")
 
     try:
         WHITELIST_USERS = set(
-            int(x) for x in os.environ.get("WHITELIST_USERS", "").split()
-        )
+            int(x) for x in os.environ.get("WHITELIST_USERS", "").split())
     except ValueError:
-        raise Exception("Your whitelisted users list does not contain valid integers.")
+        raise Exception(
+            "Your whitelisted users list does not contain valid integers.")
 
     GBAN_DUMP = os.environ.get("GBAN_DUMP", None)
     WEBHOOK = bool(os.environ.get("WEBHOOK", False))
@@ -84,7 +89,8 @@ if ENV:
     DEL_CMDS = bool(os.environ.get("DEL_CMDS", False))
     STRICT_ANTISPAM = bool(os.environ.get("STRICT_ANTISPAM", False))
     WORKERS = int(os.environ.get("WORKERS", 8))
-    BAN_STICKER = os.environ.get("BAN_STICKER", "CAADAgADOwADPPEcAXkko5EB3YGYAg")
+    BAN_STICKER = os.environ.get("BAN_STICKER",
+                                 "CAADAgADOwADPPEcAXkko5EB3YGYAg")
     ALLOW_EXCL = os.environ.get("ALLOW_EXCL", False)
     API_KEY = os.environ.get("API_ID", None)
     API_HASH = os.environ.get("API_HASH", None)
@@ -110,17 +116,20 @@ else:
         SUDO_USERS = set(int(x) for x in Config.SUDO_USERS or [])
         DEV_USERS = set(int(x) for x in Config.DEV_USERS or [])
     except ValueError:
-        raise Exception("Your sudo or dev users list does not contain valid integers.")
+        raise Exception(
+            "Your sudo or dev users list does not contain valid integers.")
 
     try:
         SUPPORT_USERS = set(int(x) for x in Config.SUPPORT_USERS or [])
     except ValueError:
-        raise Exception("Your support users list does not contain valid integers.")
+        raise Exception(
+            "Your support users list does not contain valid integers.")
 
     try:
         WHITELIST_USERS = set(int(x) for x in Config.WHITELIST_USERS or [])
     except ValueError:
-        raise Exception("Your whitelisted users list does not contain valid integers.")
+        raise Exception(
+            "Your whitelisted users list does not contain valid integers.")
 
     GBAN_DUMP = Config.GBAN_DUMP
     WEBHOOK = Config.WEBHOOK

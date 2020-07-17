@@ -130,8 +130,7 @@ async def evo(event):
             reply_text += tld(chat_id, "build_size").format(size_b)
             reply_text += tld(chat_id, "android_version").format(version)
             reply_text += tld(chat_id, "maintainer").format(
-                f"[{maintainer}](https://t.me/{maintainer_url})"
-            )
+                f"[{maintainer}](https://t.me/{maintainer_url})")
 
             keyboard = [custom.Button.url(tld(chat_id, "btn_dl"), f"{url}")]
             await event.reply(reply_text, buttons=keyboard, link_preview=False)
@@ -228,11 +227,10 @@ async def bootleggers(event):
                         reply_text += f"\n**{oh}:** `{baby}`"
 
             reply_text += tld(chat_id, "xda_thread").format(
-                devices[devicetoget]["xdathread"]
-            )
+                devices[devicetoget]["xdathread"])
             reply_text += tld(chat_id, "download").format(
-                devices[devicetoget]["filename"], devices[devicetoget]["download"]
-            )
+                devices[devicetoget]["filename"],
+                devices[devicetoget]["download"])
         else:
             reply_text = tld(chat_id, "err_not_found")
 
@@ -248,7 +246,9 @@ async def magisk(event):
 
     url = "https://raw.githubusercontent.com/topjohnwu/magisk_files/"
     releases = "**Latest Magisk Releases:**\n"
-    variant = ["master/stable", "master/beta", "canary/release", "canary/debug"]
+    variant = [
+        "master/stable", "master/beta", "canary/release", "canary/debug"
+    ]
     for variants in variant:
         fetch = get(url + variants + ".json")
         data = json.loads(fetch.content)
@@ -271,14 +271,11 @@ async def magisk(event):
 
         releases += (
             f'{name}: [ZIP v{data["magisk"]["version"]}]({data["magisk"]["link"]}) | '
-            f'[APK v{data["app"]["version"]}]({data["app"]["link"]}) | '
-        )
+            f'[APK v{data["app"]["version"]}]({data["app"]["link"]}) | ')
 
         if cc == 1:
-            releases += (
-                f'[Uninstaller]({data["uninstaller"]["link"]}) | '
-                f"[Changelog]({url}{branch}/notes.md)\n"
-            )
+            releases += (f'[Uninstaller]({data["uninstaller"]["link"]}) | '
+                         f"[Changelog]({url}{branch}/notes.md)\n")
         else:
             releases += f'[Uninstaller]({data["uninstaller"]["link"]})\n'
 

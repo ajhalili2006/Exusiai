@@ -17,7 +17,8 @@
 import re
 
 LINK_REGEX = re.compile(r"(?<!\\)\[.+?\]\((.*?)\)")
-BTN_URL_REGEX = re.compile(r"(\[([^\[]+?)\]\(buttonurl:(?:/{0,2})(.+?)(:same)?\))")
+BTN_URL_REGEX = re.compile(
+    r"(\[([^\[]+?)\]\(buttonurl:(?:/{0,2})(.+?)(:same)?\))")
 
 FORMATS = ["**", "`", "```", "__"]
 
@@ -72,7 +73,7 @@ def escape_invalid_curly_brackets(text, valids) -> str:
                         success = True
                         break
                 if success:
-                    new_text += text[idx : idx + len(v) + 2]
+                    new_text += text[idx:idx + len(v) + 2]
                     idx += len(v) + 2
                     continue
                 else:

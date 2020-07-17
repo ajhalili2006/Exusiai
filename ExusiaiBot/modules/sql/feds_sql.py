@@ -57,7 +57,8 @@ class BansF(BASE):
     user_name = Column(UnicodeText)
     reason = Column(UnicodeText, default="")
 
-    def __init__(self, fed_id, user_id, first_name, last_name, user_name, reason):
+    def __init__(self, fed_id, user_id, first_name, last_name, user_name,
+                 reason):
         self.fed_id = fed_id
         self.user_id = user_id
         self.first_name = first_name
@@ -128,7 +129,10 @@ def new_fed(owner_id, fed_name, fed_id):
             fed_name,
             str(fed_id),
             "Rules is not set in this federation.",
-            str({"owner": str(owner_id), "members": "[]"}),
+            str({
+                "owner": str(owner_id),
+                "members": "[]"
+            }),
         )
         SESSION.add(fed)
         SESSION.commit()
@@ -136,19 +140,28 @@ def new_fed(owner_id, fed_name, fed_id):
             "fid": str(fed_id),
             "fname": fed_name,
             "frules": "Rules is not set in this federation.",
-            "fusers": str({"owner": str(owner_id), "members": "[]"}),
+            "fusers": str({
+                "owner": str(owner_id),
+                "members": "[]"
+            }),
         }
         FEDERATION_BYFEDID[str(fed_id)] = {
             "owner": str(owner_id),
             "fname": fed_name,
             "frules": "Rules is not set in this federation.",
-            "fusers": str({"owner": str(owner_id), "members": "[]"}),
+            "fusers": str({
+                "owner": str(owner_id),
+                "members": "[]"
+            }),
         }
         FEDERATION_BYNAME[fed_name] = {
             "fid": str(fed_id),
             "owner": str(owner_id),
             "frules": "Rules is not set in this federation.",
-            "fusers": str({"owner": str(owner_id), "members": "[]"}),
+            "fusers": str({
+                "owner": str(owner_id),
+                "members": "[]"
+            }),
         }
         return fed
 
@@ -240,22 +253,30 @@ def user_demote_fed(fed_id, user_id):
             return False
         members.remove(user_id)
         # Set user
-        FEDERATION_BYOWNER[str(owner_id)]["fusers"] = str(
-            {"owner": str(owner_id), "members": str(members)}
-        )
-        FEDERATION_BYFEDID[str(fed_id)]["fusers"] = str(
-            {"owner": str(owner_id), "members": str(members)}
-        )
-        FEDERATION_BYNAME[fed_name]["fusers"] = str(
-            {"owner": str(owner_id), "members": str(members)}
-        )
+        FEDERATION_BYOWNER[str(owner_id)]["fusers"] = str({
+            "owner":
+            str(owner_id),
+            "members":
+            str(members)
+        })
+        FEDERATION_BYFEDID[str(fed_id)]["fusers"] = str({
+            "owner": str(owner_id),
+            "members": str(members)
+        })
+        FEDERATION_BYNAME[fed_name]["fusers"] = str({
+            "owner": str(owner_id),
+            "members": str(members)
+        })
         # Set on database
         fed = Federations(
             str(owner_id),
             fed_name,
             str(fed_id),
             fed_rules,
-            str({"owner": str(owner_id), "members": str(members)}),
+            str({
+                "owner": str(owner_id),
+                "members": str(members)
+            }),
         )
         SESSION.merge(fed)
         SESSION.commit()
@@ -274,22 +295,30 @@ def user_join_fed(fed_id, user_id):
         members = eval(eval(getfed["fusers"])["members"])
         members.append(user_id)
         # Set user
-        FEDERATION_BYOWNER[str(owner_id)]["fusers"] = str(
-            {"owner": str(owner_id), "members": str(members)}
-        )
-        FEDERATION_BYFEDID[str(fed_id)]["fusers"] = str(
-            {"owner": str(owner_id), "members": str(members)}
-        )
-        FEDERATION_BYNAME[fed_name]["fusers"] = str(
-            {"owner": str(owner_id), "members": str(members)}
-        )
+        FEDERATION_BYOWNER[str(owner_id)]["fusers"] = str({
+            "owner":
+            str(owner_id),
+            "members":
+            str(members)
+        })
+        FEDERATION_BYFEDID[str(fed_id)]["fusers"] = str({
+            "owner": str(owner_id),
+            "members": str(members)
+        })
+        FEDERATION_BYNAME[fed_name]["fusers"] = str({
+            "owner": str(owner_id),
+            "members": str(members)
+        })
         # Set on database
         fed = Federations(
             str(owner_id),
             fed_name,
             str(fed_id),
             fed_rules,
-            str({"owner": str(owner_id), "members": str(members)}),
+            str({
+                "owner": str(owner_id),
+                "members": str(members)
+            }),
         )
         SESSION.merge(fed)
         SESSION.commit()
@@ -358,9 +387,8 @@ def set_frules(fed_id, rules):
         FEDERATION_BYFEDID[str(fed_id)]["frules"] = fed_rules
         FEDERATION_BYNAME[fed_name]["frules"] = fed_rules
         # Set on database
-        fed = Federations(
-            str(owner_id), fed_name, str(fed_id), fed_rules, str(fed_members)
-        )
+        fed = Federations(str(owner_id), fed_name, str(fed_id), fed_rules,
+                          str(fed_members))
         SESSION.merge(fed)
         SESSION.commit()
         return True
@@ -380,7 +408,8 @@ def fban_user(fed_id, user_id, first_name, last_name, user_name, reason):
                 if int(I.user_id) == int(user_id):
                     SESSION.delete(I)
 
-        r = BansF(str(fed_id), str(user_id), first_name, last_name, user_name, reason)
+        r = BansF(str(fed_id), str(user_id), first_name, last_name, user_name,
+                  reason)
 
         SESSION.add(r)
         try:

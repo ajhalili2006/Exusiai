@@ -67,19 +67,16 @@ def keyboard(bot, update):
 
     update.effective_message.reply_text(
         tld(chat.id, "keyboard_updated"),
-        reply_markup=ReplyKeyboardMarkup(
+        reply_markup=ReplyKeyboardMarkup([
             [
-                [
-                    KeyboardButton("/help"),
-                    KeyboardButton(
-                        "/notes - {}".format(tld(chat.id, "keyboard_notes"))
-                    ),
-                ],
-                [KeyboardButton(btn1)],
-                [KeyboardButton(btn2)],
-                [KeyboardButton(btn3)],
-            ]
-        ),
+                KeyboardButton("/help"),
+                KeyboardButton("/notes - {}".format(
+                    tld(chat.id, "keyboard_notes"))),
+            ],
+            [KeyboardButton(btn1)],
+            [KeyboardButton(btn2)],
+            [KeyboardButton(btn3)],
+        ]),
     )
 
 

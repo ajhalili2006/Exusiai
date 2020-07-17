@@ -35,11 +35,9 @@ def do_translate(bot: Bot, update: Update, args: List[str]):
     msg = update.effective_message  # type: Optional[Message]
     lan = " ".join(args)
 
-    if (
-        msg.reply_to_message
-        and (msg.reply_to_message.audio or msg.reply_to_message.voice)
-        or (args and args[0] == "animal")
-    ):
+    if (msg.reply_to_message and
+        (msg.reply_to_message.audio or msg.reply_to_message.voice)
+            or (args and args[0] == "animal")):
         reply = random.choice(tld_list(chat.id, "translator_animal_lang"))
 
         if args:
@@ -48,9 +46,9 @@ def do_translate(bot: Bot, update: Update, args: List[str]):
             translation_type = "audio"
 
         msg.reply_text(
-            tld(chat.id, "translator_animal_translated").format(
-                translation_type, reply
-            ),
+            tld(chat.id,
+                "translator_animal_translated").format(translation_type,
+                                                       reply),
             parse_mode=ParseMode.MARKDOWN,
         )
         return
@@ -75,13 +73,14 @@ def do_translate(bot: Bot, update: Update, args: List[str]):
     dest_lang = LANGUAGES[f"{translated.dest.lower()}"].title()
     translated_text = translated.text
     msg.reply_text(
-        tld(chat.id, "translator_translated").format(
-            src_lang, to_translate_text, dest_lang, translated_text
-        ),
+        tld(chat.id,
+            "translator_translated").format(src_lang, to_translate_text,
+                                            dest_lang, translated_text),
         parse_mode=ParseMode.MARKDOWN,
     )
 
 
 __help__ = True
 
-dispatcher.add_handler(DisableAbleCommandHandler("tr", do_translate, pass_args=True))
+dispatcher.add_handler(
+    DisableAbleCommandHandler("tr", do_translate, pass_args=True))

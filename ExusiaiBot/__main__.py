@@ -54,13 +54,15 @@ GDPR = []
 importlib.import_module("ExusiaiBot.modules.tr_engine.language")
 
 for module_name in ALL_MODULES:
-    imported_module = importlib.import_module("ExusiaiBot.modules." + module_name)
+    imported_module = importlib.import_module("ExusiaiBot.modules." +
+                                              module_name)
     modname = imported_module.__name__.split(".")[2]
 
     if not modname.lower() in IMPORTED:
         IMPORTED[modname.lower()] = imported_module
     else:
-        raise Exception("Can't have two modules with the same name! Please change one")
+        raise Exception(
+            "Can't have two modules with the same name! Please change one")
 
     if hasattr(imported_module, "__help__") and imported_module.__help__:
         HELPABLE[modname.lower()] = tld(0, "modname_" + modname).strip()
@@ -88,7 +90,8 @@ for module_name in ALL_MODULES:
 # Do NOT async this!
 def send_help(chat_id, text, keyboard=None):
     if not keyboard:
-        keyboard = InlineKeyboardMarkup(paginate_modules(chat_id, 0, HELPABLE, "help"))
+        keyboard = InlineKeyboardMarkup(
+            paginate_modules(chat_id, 0, HELPABLE, "help"))
 
     dispatcher.bot.send_message(
         chat_id=chat_id,
@@ -116,9 +119,9 @@ def start(bot: Bot, update: Update, args: List[str]):
             if args[0].lower() == "help":
                 send_help(
                     update.effective_chat.id,
-                    tld(chat.id, "send-help").format(
-                        dispatcher.bot.first_name, tld(chat.id, "cmd_multitrigger")
-                    ),
+                    tld(chat.id,
+                        "send-help").format(dispatcher.bot.first_name,
+                                            tld(chat.id, "cmd_multitrigger")),
                 )
 
             elif args[0][1:].isdigit() and "rules" in IMPORTED:
@@ -128,7 +131,8 @@ def start(bot: Bot, update: Update, args: List[str]):
             send_start(bot, update)
     else:
         try:
-            update.effective_message.reply_text(tld(chat.id, "main_start_group"))
+            update.effective_message.reply_text(
+                tld(chat.id, "main_start_group"))
         except Exception:
             print("Nut")
 
@@ -139,24 +143,18 @@ def send_start(bot, update):
     # chat = update.effective_chat and unused variable
     text = tld(chat.id, "main_start_pm")
 
-    keyboard = [
-        [
-            InlineKeyboardButton(
-                text=tld(chat.id, "main_start_btn_support"),
-                url="https://t.me/exusiaisupport",
-            )
-        ]
-    ]
-    keyboard += [
-        [
-            InlineKeyboardButton(
-                text=tld(chat.id, "main_start_btn_lang"), callback_data="set_lang_"
-            ),
-            InlineKeyboardButton(
-                text=tld(chat.id, "btn_help"), callback_data="help_back"
-            ),
-        ]
-    ]
+    keyboard = [[
+        InlineKeyboardButton(
+            text=tld(chat.id, "main_start_btn_support"),
+            url="https://t.me/exusiaisupport",
+        )
+    ]]
+    keyboard += [[
+        InlineKeyboardButton(text=tld(chat.id, "main_start_btn_lang"),
+                             callback_data="set_lang_"),
+        InlineKeyboardButton(text=tld(chat.id, "btn_help"),
+                             callback_data="help_back"),
+    ]]
 
     try:
         query = update.callback_query
@@ -229,8 +227,8 @@ def help_button(bot: Bot, update: Update):
             module = mod_match.group(1)
             mod_name = tld(chat.id, "modname_" + module).strip()
             help_txt = tld(
-                chat.id, module + "_help"
-            )  # tld_help(chat.id, HELPABLE[module].__mod_name__)
+                chat.id, module +
+                "_help")  # tld_help(chat.id, HELPABLE[module].__mod_name__)
 
             if not help_txt:
                 LOGGER.exception(f"Help string for {module} not found!")
@@ -242,16 +240,12 @@ def help_button(bot: Bot, update: Update):
                 message_id=query.message.message_id,
                 text=text,
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=InlineKeyboardMarkup(
-                    [
-                        [
-                            InlineKeyboardButton(
-                                text=tld(chat.id, "btn_go_back"),
-                                callback_data="help_back",
-                            )
-                        ]
-                    ]
-                ),
+                reply_markup=InlineKeyboardMarkup([[
+                    InlineKeyboardButton(
+                        text=tld(chat.id, "btn_go_back"),
+                        callback_data="help_back",
+                    )
+                ]]),
                 disable_web_page_preview=True,
             )
 
@@ -259,13 +253,12 @@ def help_button(bot: Bot, update: Update):
             bot.edit_message_text(
                 chat_id=query.message.chat_id,
                 message_id=query.message.message_id,
-                text=tld(chat.id, "send-help").format(
-                    dispatcher.bot.first_name, tld(chat.id, "cmd_multitrigger")
-                ),
+                text=tld(chat.id,
+                         "send-help").format(dispatcher.bot.first_name,
+                                             tld(chat.id, "cmd_multitrigger")),
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(chat.id, 0, HELPABLE, "help")
-                ),
+                    paginate_modules(chat.id, 0, HELPABLE, "help")),
                 disable_web_page_preview=True,
             )
 
@@ -286,16 +279,12 @@ def get_help(bot: Bot, update: Update):
     if chat.type != chat.PRIVATE:
         update.effective_message.reply_text(
             tld(chat.id, "help_pm_only"),
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            text=tld(chat.id, "btn_help"),
-                            url="t.me/{}?start=help".format(bot.username),
-                        )
-                    ]
-                ]
-            ),
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton(
+                    text=tld(chat.id, "btn_help"),
+                    url="t.me/{}?start=help".format(bot.username),
+                )
+            ]]),
         )
         return
 
@@ -317,30 +306,25 @@ def get_help(bot: Bot, update: Update):
             send_help(
                 chat.id,
                 text,
-                InlineKeyboardMarkup(
-                    [
-                        [
-                            InlineKeyboardButton(
-                                text=tld(chat.id, "btn_go_back"),
-                                callback_data="help_back",
-                            )
-                        ]
-                    ]
-                ),
+                InlineKeyboardMarkup([[
+                    InlineKeyboardButton(
+                        text=tld(chat.id, "btn_go_back"),
+                        callback_data="help_back",
+                    )
+                ]]),
             )
 
             return
 
-        update.effective_message.reply_text(
-            tld(chat.id, "help_not_found").format(args[1]), parse_mode=ParseMode.HTML
-        )
+        update.effective_message.reply_text(tld(
+            chat.id, "help_not_found").format(args[1]),
+                                            parse_mode=ParseMode.HTML)
         return
 
     send_help(
         chat.id,
-        tld(chat.id, "send-help").format(
-            dispatcher.bot.first_name, tld(chat.id, "cmd_multitrigger")
-        ),
+        tld(chat.id, "send-help").format(dispatcher.bot.first_name,
+                                         tld(chat.id, "cmd_multitrigger")),
     )
 
 
@@ -368,9 +352,11 @@ def main():
     help_handler = CommandHandler("help", get_help)
     help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_")
 
-    start_callback_handler = CallbackQueryHandler(send_start, pattern=r"bot_start")
+    start_callback_handler = CallbackQueryHandler(send_start,
+                                                  pattern=r"bot_start")
 
-    migrate_handler = MessageHandler(Filters.status_update.migrate, migrate_chats)
+    migrate_handler = MessageHandler(Filters.status_update.migrate,
+                                     migrate_chats)
 
     # dispatcher.add_handler(test_handler)
     dispatcher.add_handler(start_handler)
@@ -413,8 +399,7 @@ def process_update(self, update):
             self.dispatch_error(None, update)
         except Exception:
             self.logger.exception(
-                "An uncaught error was raised while handling the error"
-            )
+                "An uncaught error was raised while handling the error")
         return
 
     if update.effective_chat:  # Checks if update contains chat object
@@ -422,7 +407,8 @@ def process_update(self, update):
     try:
         cnt = CHATS_CNT.get(update.effective_chat.id, 0)
     except AttributeError:
-        self.logger.exception("An uncaught error was raised while updating process")
+        self.logger.exception(
+            "An uncaught error was raised while updating process")
         return
 
     t = CHATS_TIME.get(update.effective_chat.id, datetime.datetime(1970, 1, 1))
@@ -439,20 +425,21 @@ def process_update(self, update):
 
     for group in self.groups:
         try:
-            for handler in (x for x in self.handlers[group] if x.check_update(update)):
+            for handler in (x for x in self.handlers[group]
+                            if x.check_update(update)):
                 handler.handle_update(update, self)
                 break
 
         # Stop processing with any other handler.
         except DispatcherHandlerStop:
-            self.logger.debug("Stopping further handlers due to DispatcherHandlerStop")
+            self.logger.debug(
+                "Stopping further handlers due to DispatcherHandlerStop")
             break
 
         # Dispatch any error.
         except TelegramError as te:
             self.logger.warning(
-                "A TelegramError was raised while processing the Update"
-            )
+                "A TelegramError was raised while processing the Update")
 
             try:
                 self.dispatch_error(update, te)
@@ -461,14 +448,12 @@ def process_update(self, update):
                 break
             except Exception:
                 self.logger.exception(
-                    "An uncaught error was raised while handling the error"
-                )
+                    "An uncaught error was raised while handling the error")
 
         # Errors should not stop the thread.
         except Exception:
             self.logger.exception(
-                "An uncaught error was raised while processing the update"
-            )
+                "An uncaught error was raised while processing the update")
 
 
 if __name__ == "__main__":
