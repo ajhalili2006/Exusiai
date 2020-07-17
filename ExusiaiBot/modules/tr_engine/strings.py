@@ -67,8 +67,8 @@ def tld(chat_id, t, show_none=True):
 
     if t in strings["en-US"]:
         result = decode(
-            encode(strings["en-US"][t], "latin-1", "backslashreplace"), "unicode-escape"
-        )
+            encode(strings["en-US"][t], "latin-1", "backslashreplace"),
+            "unicode-escape")
         return result
 
     err = f"No string found for {t}.\nReport it in @exusiaisupport."

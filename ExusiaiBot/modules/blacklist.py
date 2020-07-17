@@ -68,8 +68,7 @@ def blacklist(bot: Bot, update: Update, args: List[str]):
     split_text = split_message(filter_list)
     for text in split_text:
         if filter_list == tld(chat.id, "blacklist_active_list").format(
-            chat_name
-        ):  # We need to translate
+                chat_name):  # We need to translate
             msg.reply_text(
                 tld(chat.id, "blacklist_no_list").format(chat_name),
                 parse_mode=ParseMode.HTML,
@@ -100,16 +99,16 @@ def add_blacklist(bot: Bot, update: Update):
     if len(words) > 1:
         text = words[1]
         to_blacklist = list(
-            set(trigger.strip() for trigger in text.split("\n") if trigger.strip())
-        )
+            set(trigger.strip() for trigger in text.split("\n")
+                if trigger.strip()))
         for trigger in to_blacklist:
             sql.add_to_blacklist(chat_id, trigger.lower())
 
         if len(to_blacklist) == 1:
             msg.reply_text(
-                tld(chat.id, "blacklist_add").format(
-                    html.escape(to_blacklist[0]), chat_name
-                ),
+                tld(chat.id,
+                    "blacklist_add").format(html.escape(to_blacklist[0]),
+                                            chat_name),
                 parse_mode=ParseMode.HTML,
             )
 
@@ -146,8 +145,8 @@ def unblacklist(bot: Bot, update: Update):
     if len(words) > 1:
         text = words[1]
         to_unblacklist = list(
-            set(trigger.strip() for trigger in text.split("\n") if trigger.strip())
-        )
+            set(trigger.strip() for trigger in text.split("\n")
+                if trigger.strip()))
         successful = 0
         for trigger in to_unblacklist:
             success = sql.rm_from_blacklist(chat_id, trigger.lower())
@@ -157,9 +156,9 @@ def unblacklist(bot: Bot, update: Update):
         if len(to_unblacklist) == 1:
             if successful:
                 msg.reply_text(
-                    tld(chat.id, "blacklist_del").format(
-                        html.escape(to_unblacklist[0]), chat_name
-                    ),
+                    tld(chat.id,
+                        "blacklist_del").format(html.escape(to_unblacklist[0]),
+                                                chat_name),
                     parse_mode=ParseMode.HTML,
                 )
             else:
@@ -167,23 +166,24 @@ def unblacklist(bot: Bot, update: Update):
 
         elif successful == len(to_unblacklist):
             msg.reply_text(
-                tld(chat.id, "blacklist_multi_del").format(successful, chat_name),
+                tld(chat.id,
+                    "blacklist_multi_del").format(successful, chat_name),
                 parse_mode=ParseMode.HTML,
             )
 
         elif not successful:
             msg.reply_text(
                 tld(chat.id, "blacklist_err_multidel_no_trigger").format(
-                    successful, len(to_unblacklist) - successful
-                ),
+                    successful,
+                    len(to_unblacklist) - successful),
                 parse_mode=ParseMode.HTML,
             )
 
         else:
             msg.reply_text(
                 tld(chat.id, "blacklist_err_multidel_some_no_trigger").format(
-                    successful, chat_name, len(to_unblacklist) - successful
-                ),
+                    successful, chat_name,
+                    len(to_unblacklist) - successful),
                 parse_mode=ParseMode.HTML,
             )
     else:
@@ -219,21 +219,23 @@ def __migrate__(old_chat_id, new_chat_id):
 
 def __stats__():
     return "• `{}` blacklist triggers, across `{}` chats.".format(
-        sql.num_blacklist_filters(), sql.num_blacklist_filter_chats()
-    )
+        sql.num_blacklist_filters(), sql.num_blacklist_filter_chats())
 
 
 __help__ = True
 
 # TODO: Add blacklist alternative modes: warn, ban, kick, or mute.
 
-BLACKLIST_HANDLER = DisableAbleCommandHandler(
-    "blacklist", blacklist, pass_args=True, admin_ok=True
-)
+BLACKLIST_HANDLER = DisableAbleCommandHandler("blacklist",
+                                              blacklist,
+                                              pass_args=True,
+                                              admin_ok=True)
 ADD_BLACKLIST_HANDLER = CommandHandler("addblacklist", add_blacklist)
-UNBLACKLIST_HANDLER = CommandHandler(["unblacklist", "rmblacklist"], unblacklist)
+UNBLACKLIST_HANDLER = CommandHandler(["unblacklist", "rmblacklist"],
+                                     unblacklist)
 BLACKLIST_DEL_HANDLER = MessageHandler(
-    (Filters.text | Filters.command | Filters.sticker | Filters.photo) & Filters.group,
+    (Filters.text | Filters.command | Filters.sticker | Filters.photo)
+    & Filters.group,
     del_blacklist,
     edited_updates=True,
 )

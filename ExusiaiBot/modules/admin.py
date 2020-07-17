@@ -188,27 +188,22 @@ def pin(bot: Bot, update: Update, args: List[str]) -> str:
 
     is_silent = True
     if len(args) >= 1:
-        is_silent = not (
-            args[0].lower() == "notify"
-            or args[0].lower() == "loud"
-            or args[0].lower() == "violent"
-        )
+        is_silent = not (args[0].lower() == "notify" or args[0].lower()
+                         == "loud" or args[0].lower() == "violent")
 
     if prev_message and is_group:
         try:
-            bot.pinChatMessage(
-                chat.id, prev_message.message_id, disable_notification=is_silent
-            )
+            bot.pinChatMessage(chat.id,
+                               prev_message.message_id,
+                               disable_notification=is_silent)
         except BadRequest as excp:
             if excp.message == "Chat_not_modified":
                 pass
             else:
                 raise
-        return (
-            f"<b>{html.escape(chat.title)}:</b>"
-            "\n#PINNED"
-            f"\n<b>Admin:</b> {mention_html(user.id, user.first_name)}"
-        )
+        return (f"<b>{html.escape(chat.title)}:</b>"
+                "\n#PINNED"
+                f"\n<b>Admin:</b> {mention_html(user.id, user.first_name)}")
 
     return ""
 
@@ -230,11 +225,9 @@ def unpin(bot: Bot, update: Update) -> str:
         else:
             raise
 
-    return (
-        f"<b>{html.escape(chat.title)}:</b>"
-        "\n#UNPINNED"
-        f"\n<b>Admin:</b> {mention_html(user.id, user.first_name)}"
-    )
+    return (f"<b>{html.escape(chat.title)}:</b>"
+            "\n#UNPINNED"
+            f"\n<b>Admin:</b> {mention_html(user.id, user.first_name)}")
 
 
 @run_async
@@ -264,10 +257,10 @@ def invite(bot: Bot, update: Update):
             update.effective_message.reply_text(invitelink)
         else:
             update.effective_message.reply_text(
-                tld(chat.id, "admin_err_no_perm_invitelink")
-            )
+                tld(chat.id, "admin_err_no_perm_invitelink"))
     else:
-        update.effective_message.reply_text(tld(chat.id, "admin_chat_no_invitelink"))
+        update.effective_message.reply_text(
+            tld(chat.id, "admin_chat_no_invitelink"))
 
 
 @run_async
@@ -275,8 +268,8 @@ def adminlist(bot: Bot, update: Update):
     chat = update.effective_chat
     administrators = update.effective_chat.get_administrators()
     text = tld(chat.id, "admin_list").format(
-        update.effective_chat.title or tld(chat.id, "common_this_chat").lower()
-    )
+        update.effective_chat.title
+        or tld(chat.id, "common_this_chat").lower())
     for admin in administrators:
         user = admin.user
         name = "[{}](tg://user?id={})".format(user.first_name, user.id)
@@ -298,41 +291,47 @@ def reaction(bot: Bot, update: Update, args: List[str]) -> str:
         print(var)
         if var == "False":
             sql.set_command_reaction(chat.id, False)
-            update.effective_message.reply_text(tld(chat.id, "admin_disable_reaction"))
+            update.effective_message.reply_text(
+                tld(chat.id, "admin_disable_reaction"))
         elif var == "True":
             sql.set_command_reaction(chat.id, True)
-            update.effective_message.reply_text(tld(chat.id, "admin_enable_reaction"))
-        else:
             update.effective_message.reply_text(
-                tld(chat.id, "admin_err_wrong_arg"), parse_mode=ParseMode.MARKDOWN
-            )
+                tld(chat.id, "admin_enable_reaction"))
+        else:
+            update.effective_message.reply_text(tld(chat.id,
+                                                    "admin_err_wrong_arg"),
+                                                parse_mode=ParseMode.MARKDOWN)
     else:
         status = sql.command_reaction(chat.id)
         update.effective_message.reply_text(
-            tld(chat.id, "admin_reaction_status").format(
-                "enabled" if status == True else "disabled"
-            ),
+            tld(chat.id, "admin_reaction_status").format("enabled" if status ==
+                                                         True else "disabled"),
             parse_mode=ParseMode.MARKDOWN,
         )
 
 
 __help__ = True
 
-PIN_HANDLER = DisableAbleCommandHandler(
-    "pin", pin, pass_args=True, filters=Filters.group
-)
-UNPIN_HANDLER = DisableAbleCommandHandler("unpin", unpin, filters=Filters.group)
+PIN_HANDLER = DisableAbleCommandHandler("pin",
+                                        pin,
+                                        pass_args=True,
+                                        filters=Filters.group)
+UNPIN_HANDLER = DisableAbleCommandHandler("unpin",
+                                          unpin,
+                                          filters=Filters.group)
 
 INVITE_HANDLER = CommandHandler("invitelink", invite)
 
 PROMOTE_HANDLER = DisableAbleCommandHandler("promote", promote, pass_args=True)
 DEMOTE_HANDLER = DisableAbleCommandHandler("demote", demote, pass_args=True)
 
-REACT_HANDLER = DisableAbleCommandHandler(
-    "reaction", reaction, pass_args=True, filters=Filters.group
-)
+REACT_HANDLER = DisableAbleCommandHandler("reaction",
+                                          reaction,
+                                          pass_args=True,
+                                          filters=Filters.group)
 
-ADMINLIST_HANDLER = DisableAbleCommandHandler(["adminlist", "admins"], adminlist)
+ADMINLIST_HANDLER = DisableAbleCommandHandler(["adminlist", "admins"],
+                                              adminlist)
 
 dispatcher.add_handler(PIN_HANDLER)
 dispatcher.add_handler(UNPIN_HANDLER)

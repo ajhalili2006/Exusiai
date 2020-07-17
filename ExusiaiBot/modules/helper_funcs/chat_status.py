@@ -28,13 +28,12 @@ def can_delete(chat: Chat, bot_id: int) -> bool:
     return chat.get_member(bot_id).can_delete_messages
 
 
-def is_user_ban_protected(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
-    if (
-        chat.type == "private"
-        or user_id in SUDO_USERS
-        or user_id in WHITELIST_USERS
-        or chat.all_members_are_administrators
-    ):
+def is_user_ban_protected(chat: Chat,
+                          user_id: int,
+                          member: ChatMember = None) -> bool:
+    if (chat.type == "private" or user_id in SUDO_USERS
+            or user_id in WHITELIST_USERS
+            or chat.all_members_are_administrators):
         return True
 
     if not member:
@@ -43,12 +42,8 @@ def is_user_ban_protected(chat: Chat, user_id: int, member: ChatMember = None) -
 
 
 def is_user_admin(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
-    if (
-        chat.type == "private"
-        or user_id in SUDO_USERS
-        or user_id == int(777000)
-        or chat.all_members_are_administrators
-    ):
+    if (chat.type == "private" or user_id in SUDO_USERS
+            or user_id == int(777000) or chat.all_members_are_administrators):
         return True
 
     if not member:
@@ -71,13 +66,14 @@ def dev_user(func):
 
         else:
             update.effective_message.reply_text(
-                "This command is restricted to my developers only."
-            )
+                "This command is restricted to my developers only.")
 
     return is_admin
 
 
-def is_bot_admin(chat: Chat, bot_id: int, bot_member: ChatMember = None) -> bool:
+def is_bot_admin(chat: Chat,
+                 bot_id: int,
+                 bot_member: ChatMember = None) -> bool:
     if chat.type == "private" or chat.all_members_are_administrators:
         return True
 
@@ -99,7 +95,8 @@ def bot_can_delete(func):
         if can_delete(update.effective_chat, bot.id):
             return func(bot, update, *args, **kwargs)
         else:
-            update.effective_message.reply_text(tld(chat.id, "helpers_bot_cant_delete"))
+            update.effective_message.reply_text(
+                tld(chat.id, "helpers_bot_cant_delete"))
 
     return delete_rights
 
@@ -112,7 +109,8 @@ def can_pin(func):
         if update.effective_chat.get_member(bot.id).can_pin_messages:
             return func(bot, update, *args, **kwargs)
         else:
-            update.effective_message.reply_text(tld(chat.id, "helpers_bot_cant_pin"))
+            update.effective_message.reply_text(
+                tld(chat.id, "helpers_bot_cant_pin"))
 
     return pin_rights
 
@@ -126,8 +124,7 @@ def can_promote(func):
             return func(bot, update, *args, **kwargs)
         else:
             update.effective_message.reply_text(
-                tld(chat.id, "helpers_bot_cant_pro_demote")
-            )
+                tld(chat.id, "helpers_bot_cant_pro_demote"))
 
     return promote_rights
 
@@ -141,8 +138,7 @@ def can_restrict(func):
             return func(bot, update, *args, **kwargs)
         else:
             update.effective_message.reply_text(
-                tld(chat.id, "helpers_bot_cant_restrict")
-            )
+                tld(chat.id, "helpers_bot_cant_restrict"))
 
     return promote_rights
 
@@ -155,7 +151,8 @@ def bot_admin(func):
         if is_bot_admin(update.effective_chat, bot.id):
             return func(bot, update, *args, **kwargs)
         else:
-            update.effective_message.reply_text(tld(chat.id, "helpers_bot_not_admin"))
+            update.effective_message.reply_text(
+                tld(chat.id, "helpers_bot_not_admin"))
 
     return is_admin
 
@@ -178,7 +175,8 @@ def user_admin(func):
             update.effective_message.delete()
 
         elif admin_sql.command_reaction(chat.id) == True:
-            update.effective_message.reply_text(tld(chat.id, "helpers_user_not_admin"))
+            update.effective_message.reply_text(
+                tld(chat.id, "helpers_user_not_admin"))
 
     return is_admin
 

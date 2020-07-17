@@ -109,7 +109,8 @@ def ban(bot: Bot, update: Update, args: List[str]) -> str:
                 chat.id,
                 excp.message,
             )
-            message.reply_text(tld(chat.id, "bans_err_unknown").format("banning"))
+            message.reply_text(
+                tld(chat.id, "bans_err_unknown").format("banning"))
 
     return ""
 
@@ -208,7 +209,8 @@ def temp_ban(bot: Bot, update: Update, args: List[str]) -> str:
                 chat.id,
                 excp.message,
             )
-            message.reply_text(tld(chat.id, "bans_err_unknown").format("tbanning"))
+            message.reply_text(
+                tld(chat.id, "bans_err_unknown").format("tbanning"))
 
     return ""
 
@@ -286,9 +288,11 @@ def kickme(bot: Bot, update: Update):
         update.effective_message.reply_text(tld(chat.id, "bans_kick_is_admin"))
         return
 
-    res = update.effective_chat.unban_member(user_id)  # unban on current user = kick
+    res = update.effective_chat.unban_member(
+        user_id)  # unban on current user = kick
     if res:
-        update.effective_message.reply_text(tld(chat.id, "bans_kickme_success"))
+        update.effective_message.reply_text(tld(chat.id,
+                                                "bans_kickme_success"))
     else:
         update.effective_message.reply_text(tld(chat.id, "bans_kickme_failed"))
 
@@ -301,12 +305,14 @@ def banme(bot: Bot, update: Update):
     user_id = update.effective_message.from_user.id
     chat = update.effective_chat
     if is_user_admin(update.effective_chat, user_id):
-        update.effective_message.reply_text(tld(chat.id, "bans_err_usr_is_admin"))
+        update.effective_message.reply_text(
+            tld(chat.id, "bans_err_usr_is_admin"))
         return
 
     res = update.effective_chat.kick_member(user_id)
     if res:
-        update.effective_message.reply_text(tld(chat.id, "bans_kickme_success"))
+        update.effective_message.reply_text(tld(chat.id,
+                                                "bans_kickme_success"))
 
     else:
         update.effective_message.reply_text(tld(chat.id, "bans_kickme_failed"))
@@ -416,23 +422,37 @@ def sban(bot: Bot, update: Update, args: List[str]) -> str:
 
 __help__ = True
 
-BAN_HANDLER = DisableAbleCommandHandler(
-    "ban", ban, pass_args=True, filters=Filters.group, admin_ok=True
-)
-TEMPBAN_HANDLER = DisableAbleCommandHandler(
-    ["tban", "tempban"], temp_ban, pass_args=True, filters=Filters.group, admin_ok=True
-)
-KICK_HANDLER = DisableAbleCommandHandler(
-    "kick", kick, pass_args=True, filters=Filters.group, admin_ok=True
-)
-UNBAN_HANDLER = DisableAbleCommandHandler(
-    "unban", unban, pass_args=True, filters=Filters.group, admin_ok=True
-)
-KICKME_HANDLER = DisableAbleCommandHandler("kickme", kickme, filters=Filters.group)
-SBAN_HANDLER = DisableAbleCommandHandler(
-    "sban", sban, pass_args=True, filters=Filters.group, admin_ok=True
-)
-BANME_HANDLER = DisableAbleCommandHandler("banme", banme, filters=Filters.group)
+BAN_HANDLER = DisableAbleCommandHandler("ban",
+                                        ban,
+                                        pass_args=True,
+                                        filters=Filters.group,
+                                        admin_ok=True)
+TEMPBAN_HANDLER = DisableAbleCommandHandler(["tban", "tempban"],
+                                            temp_ban,
+                                            pass_args=True,
+                                            filters=Filters.group,
+                                            admin_ok=True)
+KICK_HANDLER = DisableAbleCommandHandler("kick",
+                                         kick,
+                                         pass_args=True,
+                                         filters=Filters.group,
+                                         admin_ok=True)
+UNBAN_HANDLER = DisableAbleCommandHandler("unban",
+                                          unban,
+                                          pass_args=True,
+                                          filters=Filters.group,
+                                          admin_ok=True)
+KICKME_HANDLER = DisableAbleCommandHandler("kickme",
+                                           kickme,
+                                           filters=Filters.group)
+SBAN_HANDLER = DisableAbleCommandHandler("sban",
+                                         sban,
+                                         pass_args=True,
+                                         filters=Filters.group,
+                                         admin_ok=True)
+BANME_HANDLER = DisableAbleCommandHandler("banme",
+                                          banme,
+                                          filters=Filters.group)
 
 dispatcher.add_handler(BAN_HANDLER)
 dispatcher.add_handler(TEMPBAN_HANDLER)

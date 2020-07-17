@@ -63,7 +63,8 @@ def report_setting(bot: Bot, update: Update, args: List[str]):
                 msg.reply_text(tld(chat.id, "reports_pm_off"))
         else:
             msg.reply_text(
-                tld(chat.id, "reports_pm_pref").format(sql.user_should_report(chat.id)),
+                tld(chat.id,
+                    "reports_pm_pref").format(sql.user_should_report(chat.id)),
                 parse_mode=ParseMode.MARKDOWN,
             )
 
@@ -79,8 +80,7 @@ def report_setting(bot: Bot, update: Update, args: List[str]):
         else:
             msg.reply_text(
                 tld(chat.id, "reports_chat_pref").format(
-                    sql.chat_should_report(chat.id)
-                ),
+                    sql.chat_should_report(chat.id)),
                 parse_mode=ParseMode.MARKDOWN,
             )
 
@@ -102,23 +102,19 @@ def report(bot: Bot, update: Update) -> str:
             return
 
         if chat.username and chat.type == Chat.SUPERGROUP:
-            msg = (
-                "<b>{}:</b>"
-                "\n<b>Reported user:</b> {} (<code>{}</code>)"
-                "\n<b>Reported by:</b> {} (<code>{}</code>)".format(
-                    html.escape(chat.title),
-                    mention_html(reported_user.id, reported_user.first_name),
-                    reported_user.id,
-                    mention_html(user.id, user.first_name),
-                    user.id,
-                )
-            )
-            link = (
-                "\n<b>Link:</b> "
-                '<a href="http://telegram.me/{}/{}">click here</a>'.format(
-                    chat.username, message.message_id
-                )
-            )
+            msg = ("<b>{}:</b>"
+                   "\n<b>Reported user:</b> {} (<code>{}</code>)"
+                   "\n<b>Reported by:</b> {} (<code>{}</code>)".format(
+                       html.escape(chat.title),
+                       mention_html(reported_user.id,
+                                    reported_user.first_name),
+                       reported_user.id,
+                       mention_html(user.id, user.first_name),
+                       user.id,
+                   ))
+            link = ("\n<b>Link:</b> "
+                    '<a href="http://telegram.me/{}/{}">click here</a>'.format(
+                        chat.username, message.message_id))
 
             should_forward = True
             keyboard = [
@@ -126,22 +122,22 @@ def report(bot: Bot, update: Update) -> str:
                     InlineKeyboardButton(
                         "➡ Message",
                         url="https://t.me/{}/{}".format(
-                            chat.username, str(message.reply_to_message.message_id)
-                        ),
+                            chat.username,
+                            str(message.reply_to_message.message_id)),
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         "⚠ Kick",
                         callback_data="report_{}=kick={}={}".format(
-                            chat.id, reported_user.id, reported_user.first_name
-                        ),
+                            chat.id, reported_user.id,
+                            reported_user.first_name),
                     ),
                     InlineKeyboardButton(
                         "⛔️ Ban",
                         callback_data="report_{}=banned={}={}".format(
-                            chat.id, reported_user.id, reported_user.first_name
-                        ),
+                            chat.id, reported_user.id,
+                            reported_user.first_name),
                     ),
                 ],
                 [
@@ -159,8 +155,7 @@ def report(bot: Bot, update: Update) -> str:
 
         else:
             msg = '{} is calling for admins in "{}"!'.format(
-                mention_html(user.id, user.first_name), html.escape(chat_name)
-            )
+                mention_html(user.id, user.first_name), html.escape(chat_name))
             link = ""
             should_forward = True
 
@@ -182,7 +177,7 @@ def report(bot: Bot, update: Update) -> str:
                             message.reply_to_message.forward(admin.user.id)
 
                             if (
-                                len(message.text.split()) > 1
+                                    len(message.text.split()) > 1
                             ):  # If user is giving a reason, send his message too
                                 message.forward(admin.user.id)
 
@@ -198,7 +193,7 @@ def report(bot: Bot, update: Update) -> str:
                             message.reply_to_message.forward(admin.user.id)
 
                             if (
-                                len(message.text.split()) > 1
+                                    len(message.text.split()) > 1
                             ):  # If user is giving a reason, send his message too
                                 message.forward(admin.user.id)
 
@@ -215,19 +210,19 @@ def report(bot: Bot, update: Update) -> str:
                             message.reply_to_message.forward(admin.user.id)
 
                             if (
-                                len(message.text.split()) > 1
+                                    len(message.text.split()) > 1
                             ):  # If user is giving a reason, send his message too
                                 message.forward(admin.user.id)
 
                 except Unauthorized:
                     pass
                 except BadRequest as excp:  # TODO: cleanup exceptions
-                    LOGGER.exception(f"Exception while reporting user : {excp}")
+                    LOGGER.exception(
+                        f"Exception while reporting user : {excp}")
 
         message.reply_to_message.reply_text(
             tld(chat.id, "reports_success").format(
-                mention_html(user.id, user.first_name)
-            ),
+                mention_html(user.id, user.first_name)),
             parse_mode=ParseMode.HTML,
             disable_web_page_preview=True,
         )

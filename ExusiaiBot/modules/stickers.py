@@ -40,12 +40,12 @@ def stickerid(bot: Bot, update: Update):
     if msg.reply_to_message and msg.reply_to_message.sticker:
         update.effective_message.reply_text(
             tld(chat.id, "stickers_stickerid").format(
-                escape_markdown(msg.reply_to_message.sticker.file_id)
-            ),
+                escape_markdown(msg.reply_to_message.sticker.file_id)),
             parse_mode=ParseMode.MARKDOWN,
         )
     else:
-        update.effective_message.reply_text(tld(chat.id, "stickers_stickerid_no_reply"))
+        update.effective_message.reply_text(
+            tld(chat.id, "stickers_stickerid_no_reply"))
 
 
 @run_async
@@ -60,8 +60,7 @@ def getsticker(bot: Bot, update: Update):
         os.remove("images/sticker.png")
     else:
         update.effective_message.reply_text(
-            tld(chat_id, "stickers_getsticker_no_reply")
-        )
+            tld(chat_id, "stickers_getsticker_no_reply"))
 
 
 @run_async
@@ -78,9 +77,8 @@ def kang(bot: Bot, update: Update, args: List[str]):
             stickerset = bot.get_sticker_set(packname)
             if len(stickerset.stickers) >= max_stickers:
                 packnum += 1
-                packname = (
-                    "c" + str(packnum) + "_" + str(user.id) + "_by_" + bot.username
-                )
+                packname = ("c" + str(packnum) + "_" + str(user.id) + "_by_" +
+                            bot.username)
             else:
                 packname_found = 1
         except TelegramError as e:
@@ -133,7 +131,8 @@ def kang(bot: Bot, update: Update, args: List[str]):
                 emojis=sticker_emoji,
             )
             msg.reply_text(
-                tld(chat.id, "stickers_kang_success").format(packname, sticker_emoji),
+                tld(chat.id,
+                    "stickers_kang_success").format(packname, sticker_emoji),
                 parse_mode=ParseMode.MARKDOWN,
             )
         except OSError as e:
@@ -162,8 +161,7 @@ def kang(bot: Bot, update: Update, args: List[str]):
                 )
                 msg.reply_text(
                     tld(chat.id, "stickers_kang_success").format(
-                        packname, sticker_emoji
-                    ),
+                        packname, sticker_emoji),
                     parse_mode=ParseMode.MARKDOWN,
                 )
             elif e.message == "Invalid sticker emojis":
@@ -173,8 +171,7 @@ def kang(bot: Bot, update: Update, args: List[str]):
             elif e.message == "Internal Server Error: sticker set not found (500)":
                 msg.reply_text(
                     tld(chat.id, "stickers_kang_success").format(
-                        packname, sticker_emoji
-                    ),
+                        packname, sticker_emoji),
                     parse_mode=ParseMode.MARKDOWN,
                 )
             print(e)
@@ -215,7 +212,8 @@ def kang(bot: Bot, update: Update, args: List[str]):
                 emojis=sticker_emoji,
             )
             msg.reply_text(
-                tld(chat.id, "stickers_kang_success").format(packname, sticker_emoji),
+                tld(chat.id,
+                    "stickers_kang_success").format(packname, sticker_emoji),
                 parse_mode=ParseMode.MARKDOWN,
             )
         except OSError as e:
@@ -244,8 +242,7 @@ def kang(bot: Bot, update: Update, args: List[str]):
                 )
                 msg.reply_text(
                     tld(chat.id, "stickers_kang_success").format(
-                        packname, sticker_emoji
-                    ),
+                        packname, sticker_emoji),
                     parse_mode=ParseMode.MARKDOWN,
                 )
             elif e.message == "Invalid sticker emojis":
@@ -255,8 +252,7 @@ def kang(bot: Bot, update: Update, args: List[str]):
             elif e.message == "Internal Server Error: sticker set not found (500)":
                 msg.reply_text(
                     tld(chat.id, "stickers_kang_success").format(
-                        packname, sticker_emoji
-                    ),
+                        packname, sticker_emoji),
                     parse_mode=ParseMode.MARKDOWN,
                 )
             print(e)
@@ -276,7 +272,8 @@ def kang(bot: Bot, update: Update, args: List[str]):
         os.remove("images/kangsticker.png")
 
 
-def makepack_internal(msg, user, png_sticker, emoji, bot, packname, packnum, chat):
+def makepack_internal(msg, user, png_sticker, emoji, bot, packname, packnum,
+                      chat):
     name = user.first_name
     name = name[:50]
     try:
@@ -300,13 +297,15 @@ def makepack_internal(msg, user, png_sticker, emoji, bot, packname, packnum, cha
         elif e.message == "Peer_id_invalid":
             msg.reply_text(
                 tld(chat.id, "stickers_pack_contact_pm"),
-                reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton(text="Start", url=f"t.me/{bot.username}")]]
-                ),
+                reply_markup=InlineKeyboardMarkup([[
+                    InlineKeyboardButton(text="Start",
+                                         url=f"t.me/{bot.username}")
+                ]]),
             )
         elif e.message == "Internal Server Error: created sticker set not found (500)":
             msg.reply_text(
-                tld(chat.id, "stickers_kang_success").format(packname, sticker_emoji),
+                tld(chat.id,
+                    "stickers_kang_success").format(packname, sticker_emoji),
                 parse_mode=ParseMode.MARKDOWN,
             )
         return
@@ -324,7 +323,10 @@ __help__ = True
 
 STICKERID_HANDLER = DisableAbleCommandHandler("stickerid", stickerid)
 GETSTICKER_HANDLER = DisableAbleCommandHandler("getsticker", getsticker)
-KANG_HANDLER = DisableAbleCommandHandler("kang", kang, pass_args=True, admin_ok=True)
+KANG_HANDLER = DisableAbleCommandHandler("kang",
+                                         kang,
+                                         pass_args=True,
+                                         admin_ok=True)
 
 dispatcher.add_handler(STICKERID_HANDLER)
 dispatcher.add_handler(GETSTICKER_HANDLER)

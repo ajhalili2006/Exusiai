@@ -64,10 +64,8 @@ def get_id(bot: Bot, update: Update, args: List[str]):
     user_id = extract_user(update.effective_message, args)
     chat = update.effective_chat  # type: Optional[Chat]
     if user_id:
-        if (
-            update.effective_message.reply_to_message
-            and update.effective_message.reply_to_message.forward_from
-        ):
+        if (update.effective_message.reply_to_message
+                and update.effective_message.reply_to_message.forward_from):
             user1 = update.effective_message.reply_to_message.from_user
             user2 = update.effective_message.reply_to_message.forward_from
             update.effective_message.reply_markdown(
@@ -76,26 +74,22 @@ def get_id(bot: Bot, update: Update, args: List[str]):
                     user2.id,
                     escape_markdown(user1.first_name),
                     user1.id,
-                )
-            )
+                ))
         else:
             user = bot.get_chat(user_id)
             update.effective_message.reply_markdown(
-                tld(chat.id, "misc_get_id_2").format(
-                    escape_markdown(user.first_name), user.id
-                )
-            )
+                tld(chat.id,
+                    "misc_get_id_2").format(escape_markdown(user.first_name),
+                                            user.id))
     else:
         chat = update.effective_chat  # type: Optional[Chat]
         if chat.type == "private":
             update.effective_message.reply_markdown(
-                tld(chat.id, "misc_id_1").format(chat.id)
-            )
+                tld(chat.id, "misc_id_1").format(chat.id))
 
         else:
             update.effective_message.reply_markdown(
-                tld(chat.id, "misc_id_2").format(chat.id)
-            )
+                tld(chat.id, "misc_id_2").format(chat.id))
 
 
 @run_async
@@ -111,14 +105,10 @@ def info(bot: Bot, update: Update, args: List[str]):
         user = msg.from_user
 
     elif not msg.reply_to_message and (
-        not args
-        or (
-            len(args) >= 1
-            and not args[0].startswith("@")
-            and not args[0].isdigit()
-            and not msg.parse_entities([MessageEntity.TEXT_MENTION])
-        )
-    ):
+            not args or
+        (len(args) >= 1 and not args[0].startswith("@")
+         and not args[0].isdigit()
+         and not msg.parse_entities([MessageEntity.TEXT_MENTION]))):
         msg.reply_text(tld(chat.id, "I can't extract a user from this."))
         return
 
@@ -127,15 +117,19 @@ def info(bot: Bot, update: Update, args: List[str]):
 
     text = tld(chat.id, "misc_info_1")
     text += tld(chat.id, "misc_info_id").format(user.id)
-    text += tld(chat.id, "misc_info_first").format(html.escape(user.first_name))
+    text += tld(chat.id,
+                "misc_info_first").format(html.escape(user.first_name))
 
     if user.last_name:
-        text += tld(chat.id, "misc_info_name").format(html.escape(user.last_name))
+        text += tld(chat.id,
+                    "misc_info_name").format(html.escape(user.last_name))
 
     if user.username:
-        text += tld(chat.id, "misc_info_username").format(html.escape(user.username))
+        text += tld(chat.id,
+                    "misc_info_username").format(html.escape(user.username))
 
-    text += tld(chat.id, "misc_info_user_link").format(mention_html(user.id, "link"))
+    text += tld(chat.id,
+                "misc_info_user_link").format(mention_html(user.id, "link"))
 
     if user.id == OWNER_ID:
         text += tld(chat.id, "misc_info_is_owner")
@@ -182,20 +176,20 @@ def reply_keyboard_remove(bot: Bot, update: Update):
         reply_markup=reply_markup,
         reply_to_message_id=update.message.message_id,
     )
-    bot.delete_message(
-        chat_id=update.message.chat_id, message_id=old_message.message_id
-    )
+    bot.delete_message(chat_id=update.message.chat_id,
+                       message_id=old_message.message_id)
 
 
 @run_async
 def gdpr(bot: Bot, update: Update):
-    update.effective_message.reply_text(tld(update.effective_chat.id, "misc_gdpr"))
+    update.effective_message.reply_text(
+        tld(update.effective_chat.id, "misc_gdpr"))
     for mod in GDPR:
         mod.__gdpr__(update.effective_user.id)
 
-    update.effective_message.reply_text(
-        tld(update.effective_chat.id, "send_gdpr"), parse_mode=ParseMode.MARKDOWN
-    )
+    update.effective_message.reply_text(tld(update.effective_chat.id,
+                                            "send_gdpr"),
+                                        parse_mode=ParseMode.MARKDOWN)
 
 
 def shell(command):
@@ -212,26 +206,18 @@ def ram(bot: Bot, update: Update):
     for p in processes[1:]:
         mem += int(
             float(
-                shell(
-                    "ps u -p {} | awk ".format(p)
-                    + "'{sum=sum+$6}; END {print sum/1024}'"
-                )[0]
-                .decode()
-                .rstrip()
-                .replace("'", "")
-            )
-        )
-    update.message.reply_text(
-        f"RAM usage = <code>{mem} MiB</code>", parse_mode=ParseMode.HTML
-    )
+                shell("ps u -p {} | awk ".format(p) +
+                      "'{sum=sum+$6}; END {print sum/1024}'")
+                [0].decode().rstrip().replace("'", "")))
+    update.message.reply_text(f"RAM usage = <code>{mem} MiB</code>",
+                              parse_mode=ParseMode.HTML)
 
 
 @run_async
 def markdown_help(bot: Bot, update: Update):
     chat = update.effective_chat  # type: Optional[Chat]
-    update.effective_message.reply_text(
-        tld(chat.id, "misc_md_list"), parse_mode=ParseMode.HTML
-    )
+    update.effective_message.reply_text(tld(chat.id, "misc_md_list"),
+                                        parse_mode=ParseMode.HTML)
     update.effective_message.reply_text(tld(chat.id, "misc_md_try"))
     update.effective_message.reply_text(tld(chat.id, "misc_md_help"))
 
@@ -248,7 +234,7 @@ def stats(bot: Bot, update: Update):
 @run_async
 def github(bot: Bot, update: Update):
     message = update.effective_message
-    text = message.text[len("/git ") :]
+    text = message.text[len("/git "):]
     usr = get(f"https://api.github.com/users/{text}").json()
     if usr.get("login"):
         text = f"*Username:* [{usr['login']}](https://github.com/{usr['login']})"
@@ -302,22 +288,22 @@ def github(bot: Bot, update: Update):
         reply_text = text
     else:
         reply_text = "User not found. Make sure you entered valid username!"
-    message.reply_text(
-        reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
-    )
+    message.reply_text(reply_text,
+                       parse_mode=ParseMode.MARKDOWN,
+                       disable_web_page_preview=True)
 
 
 @run_async
 def repo(bot: Bot, update: Update, args: List[str]):
     message = update.effective_message
-    text = message.text[len("/repo ") :]
+    text = message.text[len("/repo "):]
     usr = get(f"https://api.github.com/users/{text}/repos?per_page=40").json()
     reply_text = "*Repo*\n"
     for i in range(len(usr)):
         reply_text += f"[{usr[i]['name']}]({usr[i]['html_url']})\n"
-    message.reply_text(
-        reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
-    )
+    message.reply_text(reply_text,
+                       parse_mode=ParseMode.MARKDOWN,
+                       disable_web_page_preview=True)
 
 
 @run_async
@@ -350,9 +336,9 @@ def paste(bot: Bot, update: Update, args: List[str]):
         reply = tld(chat.id, "misc_paste_success").format(BURL, key, BURL, key)
     else:
         reply = f"{BURL}/{key}"
-    update.effective_message.reply_text(
-        reply, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
-    )
+    update.effective_message.reply_text(reply,
+                                        parse_mode=ParseMode.MARKDOWN,
+                                        disable_web_page_preview=True)
 
 
 @run_async
@@ -371,9 +357,9 @@ def get_paste_content(bot: Bot, update: Update, args: List[str]):
     format_view = f"{BURL}/v/"
 
     if key.startswith(format_view):
-        key = key[len(format_view) :]
+        key = key[len(format_view):]
     elif key.startswith(format_normal):
-        key = key[len(format_normal) :]
+        key = key[len(format_normal):]
 
     r = requests.get(f"{BURL}/raw/{key}")
 
@@ -383,16 +369,16 @@ def get_paste_content(bot: Bot, update: Update, args: List[str]):
             update.effective_message.reply_text(res["message"])
         except Exception:
             if r.status_code == 404:
-                update.effective_message.reply_text(tld(chat.id, "misc_paste_404"))
+                update.effective_message.reply_text(
+                    tld(chat.id, "misc_paste_404"))
             else:
                 update.effective_message.reply_text(
-                    tld(chat.id, "misc_get_pasted_unknown")
-                )
+                    tld(chat.id, "misc_get_pasted_unknown"))
         r.raise_for_status()
 
-    update.effective_message.reply_text(
-        "```" + escape_markdown(r.text) + "```", parse_mode=ParseMode.MARKDOWN
-    )
+    update.effective_message.reply_text("```" + escape_markdown(r.text) +
+                                        "```",
+                                        parse_mode=ParseMode.MARKDOWN)
 
 
 @run_async
@@ -411,9 +397,9 @@ def get_paste_stats(bot: Bot, update: Update, args: List[str]):
     format_view = f"{BURL}/v/"
 
     if key.startswith(format_view):
-        key = key[len(format_view) :]
+        key = key[len(format_view):]
     elif key.startswith(format_normal):
-        key = key[len(format_normal) :]
+        key = key[len(format_normal):]
 
     r = requests.get(f"{BURL}/documents/{key}")
 
@@ -423,11 +409,11 @@ def get_paste_stats(bot: Bot, update: Update, args: List[str]):
             update.effective_message.reply_text(res["message"])
         except Exception:
             if r.status_code == 404:
-                update.effective_message.reply_text(tld(chat.id, "misc_paste_404"))
+                update.effective_message.reply_text(
+                    tld(chat.id, "misc_paste_404"))
             else:
                 update.effective_message.reply_text(
-                    tld(chat.id, "misc_get_pasted_unknown")
-                )
+                    tld(chat.id, "misc_get_pasted_unknown"))
         r.raise_for_status()
 
     document = r.json()["document"]
@@ -440,10 +426,11 @@ def get_paste_stats(bot: Bot, update: Update, args: List[str]):
 @run_async
 def ud(bot: Bot, update: Update):
     message = update.effective_message
-    text = message.text[len("/ud ") :]
+    text = message.text[len("/ud "):]
     if text == "":
         text = "Cockblocked By Steve Jobs"
-    results = get(f"http://api.urbandictionary.com/v0/define?term={text}").json()
+    results = get(
+        f"http://api.urbandictionary.com/v0/define?term={text}").json()
     reply_text = f'Word: {text}\nDefinition: {results["list"][0]["definition"]}'
     message.reply_text(reply_text)
 
@@ -457,15 +444,10 @@ def wiki(bot: Bot, update: Update):
     else:
         try:
             pertama = update.effective_message.reply_text("🔄 Loading...")
-            keyboard = InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            text="🔧 More Info...", url=wikipedia.page(kueri).url
-                        )
-                    ]
-                ]
-            )
+            keyboard = InlineKeyboardMarkup([[
+                InlineKeyboardButton(text="🔧 More Info...",
+                                     url=wikipedia.page(kueri).url)
+            ]])
             bot.editMessageText(
                 chat_id=update.effective_chat.id,
                 message_id=pertama.message_id,
@@ -478,17 +460,15 @@ def wiki(bot: Bot, update: Update):
             update.effective_message.reply_text("⚠ Error: {}".format(et))
         except wikipedia.exceptions.DisambiguationError as eet:
             update.effective_message.reply_text(
-                "⚠ Error\n There are too many query! Express it more!\nPossible query result:\n{}".format(
-                    eet
-                )
-            )
+                "⚠ Error\n There are too many query! Express it more!\nPossible query result:\n{}"
+                .format(eet))
 
 
 @run_async
 def covid(bot: Bot, update: Update):
     message = update.effective_message
     chat = update.effective_chat
-    country = str(message.text[len(f"/covid ") :])
+    country = str(message.text[len(f"/covid "):])
     if country == "":
         country = "world"
     if country.lower() in ["south korea", "korea"]:
@@ -552,9 +532,8 @@ def ping(bot: Bot, update: Update):
     message = msg.reply_text("Pinging...")
     end_time = time.time()
     ping_time = round((end_time - start_time) * 1000, 3)
-    message.edit_text(
-        "*Pong!!!*\n`{}ms`".format(ping_time), parse_mode=ParseMode.MARKDOWN
-    )
+    message.edit_text("*Pong!!!*\n`{}ms`".format(ping_time),
+                      parse_mode=ParseMode.MARKDOWN)
 
 
 @run_async
@@ -564,7 +543,8 @@ def sudo_list(bot: Bot, update: Update):
         user_id = int(sudo)  # Ensure int
         user = bot.get_chat(user_id)
         first_name = user.first_name
-        reply += """• <a href="tg://user?id={}">{}</a>\n""".format(user_id, first_name)
+        reply += """• <a href="tg://user?id={}">{}</a>\n""".format(
+            user_id, first_name)
     update.effective_message.reply_text(reply, parse_mode=ParseMode.HTML)
 
 
@@ -576,7 +556,8 @@ def support_list(bot: Bot, update: Update):
         user = bot.get_chat(user_id)
         first_name = user.first_name.replace(">", "&gt;")
         first_name = first_name.replace("<", "&lt;")
-        reply += """• <a href="tg://user?id={}">{}</a>\n""".format(user_id, first_name)
+        reply += """• <a href="tg://user?id={}">{}</a>\n""".format(
+            user_id, first_name)
     update.effective_message.reply_text(reply, parse_mode=ParseMode.HTML)
 
 
@@ -602,7 +583,10 @@ def speed_test(bot: Bot, update: Update):
 
 __help__ = True
 
-ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True, admin_ok=True)
+ID_HANDLER = DisableAbleCommandHandler("id",
+                                       get_id,
+                                       pass_args=True,
+                                       admin_ok=True)
 PING_HANDLER = DisableAbleCommandHandler("ping", ping)
 SUDO_LIST_HANDLER = CommandHandler(
     "sudolist",
@@ -614,26 +598,34 @@ SUPPORT_LIST_HANDLER = CommandHandler(
     support_list,
     filters=CustomFilters.sudo_filter | CustomFilters.support_filter,
 )
-SPEEDTEST_HANDLER = CommandHandler(
-    "speed", speed_test, filters=CustomFilters.sudo_filter
-)
+SPEEDTEST_HANDLER = CommandHandler("speed",
+                                   speed_test,
+                                   filters=CustomFilters.sudo_filter)
 IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID))
-INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True, admin_ok=True)
+INFO_HANDLER = DisableAbleCommandHandler("info",
+                                         info,
+                                         pass_args=True,
+                                         admin_ok=True)
 GITHUB_HANDLER = DisableAbleCommandHandler("git", github, admin_ok=True)
-REPO_HANDLER = DisableAbleCommandHandler("repo", repo, pass_args=True, admin_ok=True)
+REPO_HANDLER = DisableAbleCommandHandler("repo",
+                                         repo,
+                                         pass_args=True,
+                                         admin_ok=True)
 
 ECHO_HANDLER = CommandHandler("echo", echo, filters=Filters.user(OWNER_ID))
-MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help, filters=Filters.private)
+MD_HELP_HANDLER = CommandHandler("markdownhelp",
+                                 markdown_help,
+                                 filters=Filters.private)
 
 STATS_HANDLER = CommandHandler("stats", stats, filters=Filters.user(OWNER_ID))
 GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private)
 PASTE_HANDLER = DisableAbleCommandHandler("paste", paste, pass_args=True)
-GET_PASTE_HANDLER = DisableAbleCommandHandler(
-    "getpaste", get_paste_content, pass_args=True
-)
-PASTE_STATS_HANDLER = DisableAbleCommandHandler(
-    "pastestats", get_paste_stats, pass_args=True
-)
+GET_PASTE_HANDLER = DisableAbleCommandHandler("getpaste",
+                                              get_paste_content,
+                                              pass_args=True)
+PASTE_STATS_HANDLER = DisableAbleCommandHandler("pastestats",
+                                                get_paste_stats,
+                                                pass_args=True)
 UD_HANDLER = DisableAbleCommandHandler("ud", ud)
 WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
 COVID_HANDLER = DisableAbleCommandHandler("covid", covid, admin_ok=True)
@@ -659,7 +651,6 @@ dispatcher.add_handler(GDPR_HANDLER)
 dispatcher.add_handler(GITHUB_HANDLER)
 dispatcher.add_handler(REPO_HANDLER)
 dispatcher.add_handler(
-    DisableAbleCommandHandler("removebotkeyboard", reply_keyboard_remove)
-)
+    DisableAbleCommandHandler("removebotkeyboard", reply_keyboard_remove))
 dispatcher.add_handler(WIKI_HANDLER)
 dispatcher.add_handler(COVID_HANDLER)

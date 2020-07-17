@@ -91,9 +91,9 @@ def get(bot, update, notename, show_none=True, no_format=False):
     if note and note.is_reply:
         if MESSAGE_DUMP:
             try:
-                bot.forward_message(
-                    chat_id=chat_id, from_chat_id=MESSAGE_DUMP, message_id=note.value
-                )
+                bot.forward_message(chat_id=chat_id,
+                                    from_chat_id=MESSAGE_DUMP,
+                                    message_id=note.value)
             except BadRequest as excp:
                 if excp.message == "Message to forward not found":
                     message.reply_text(tld(chat.id, "note_lost"))
@@ -102,9 +102,9 @@ def get(bot, update, notename, show_none=True, no_format=False):
                     raise
         else:
             try:
-                bot.forward_message(
-                    chat_id=chat_id, from_chat_id=chat_id, message_id=note.value
-                )
+                bot.forward_message(chat_id=chat_id,
+                                    from_chat_id=chat_id,
+                                    message_id=note.value)
 
             except BadRequest as excp:
                 if excp.message == "Message to forward not found":
@@ -131,7 +131,8 @@ def get(bot, update, notename, show_none=True, no_format=False):
         keyboard = InlineKeyboardMarkup(keyb)
 
         try:
-            if note and note.msgtype in (sql.Types.BUTTON_TEXT, sql.Types.TEXT):
+            if note and note.msgtype in (sql.Types.BUTTON_TEXT,
+                                         sql.Types.TEXT):
                 try:
                     bot.send_message(
                         send_id,
@@ -145,8 +146,7 @@ def get(bot, update, notename, show_none=True, no_format=False):
                     if excp.message == "Wrong http url":
                         failtext = tld(chat.id, "note_url_invalid")
                         failtext += "\n\n```\n{}```".format(
-                            note.value + revert_buttons(buttons)
-                        )
+                            note.value + revert_buttons(buttons))
                         message.reply_text(failtext, parse_mode="markdown")
 
             else:
@@ -170,9 +170,8 @@ def get(bot, update, notename, show_none=True, no_format=False):
                 sql.rm_note(chat_id, notename)
             else:
                 message.reply_text(tld(chat.id, "note_cannot_send"))
-                LOGGER.exception(
-                    "Could not parse message #%s in chat %s", notename, str(chat_id)
-                )
+                LOGGER.exception("Could not parse message #%s in chat %s",
+                                 notename, str(chat_id))
                 LOGGER.warning("Message was: %s", str(note.value))
 
     return
@@ -227,23 +226,27 @@ def save(bot: Bot, update: Update):
         text = note_name
 
     if not sql.get_note(chat_id, note_name):
-        sql.add_note_to_db(
-            chat_id, note_name, text, data_type, buttons=buttons, file=content
-        )
+        sql.add_note_to_db(chat_id,
+                           note_name,
+                           text,
+                           data_type,
+                           buttons=buttons,
+                           file=content)
         msg.reply_text(
-            tld(chat.id, "save_success").format(
-                note_name, chat_name, note_name, note_name
-            ),
+            tld(chat.id, "save_success").format(note_name, chat_name,
+                                                note_name, note_name),
             parse_mode=ParseMode.MARKDOWN,
         )
     else:
-        sql.add_note_to_db(
-            chat_id, note_name, text, data_type, buttons=buttons, file=content
-        )
+        sql.add_note_to_db(chat_id,
+                           note_name,
+                           text,
+                           data_type,
+                           buttons=buttons,
+                           file=content)
         msg.reply_text(
-            tld(chat.id, "save_updated").format(
-                note_name, chat_name, note_name, note_name
-            ),
+            tld(chat.id, "save_updated").format(note_name, chat_name,
+                                                note_name, note_name),
             parse_mode=ParseMode.MARKDOWN,
         )
 
@@ -273,7 +276,8 @@ def clear(bot: Bot, update: Update, args: List[str]):
                 parse_mode=ParseMode.MARKDOWN,
             )
         else:
-            update.effective_message.reply_text(tld(chat.id, "note_not_existed"))
+            update.effective_message.reply_text(
+                tld(chat.id, "note_not_existed"))
 
 
 @run_async
@@ -299,7 +303,8 @@ def list_notes(bot: Bot, update: Update):
     for note in note_list:
         note_name = " • `#{}`\n".format(note.name.lower())
         if len(msg) + len(note_name) > MAX_MESSAGE_LENGTH:
-            update.effective_message.reply_text(msg, parse_mode=ParseMode.MARKDOWN)
+            update.effective_message.reply_text(msg,
+                                                parse_mode=ParseMode.MARKDOWN)
             msg = ""
         msg += note_name
 
@@ -311,9 +316,8 @@ def list_notes(bot: Bot, update: Update):
 
     elif len(msg) != 0:
         msg += tld(chat.id, "note_get")
-        update.effective_message.reply_text(
-            msg.format(chat_name), parse_mode=ParseMode.MARKDOWN
-        )
+        update.effective_message.reply_text(msg.format(chat_name),
+                                            parse_mode=ParseMode.MARKDOWN)
 
 
 @run_async
@@ -354,7 +358,8 @@ def remove_all_notes(bot: Bot, update: Update):
 
 
 def __stats__():
-    return "• `{}` notes, accross `{}` chats.".format(sql.num_notes(), sql.num_chats())
+    return "• `{}` notes, accross `{}` chats.".format(sql.num_notes(),
+                                                      sql.num_chats())
 
 
 def __migrate__(old_chat_id, new_chat_id):
@@ -370,7 +375,9 @@ SAVE_HANDLER = CommandHandler("save", save)
 REMOVE_ALL_NOTES_HANDLER = CommandHandler("clearall", remove_all_notes)
 DELETE_HANDLER = CommandHandler("clear", clear, pass_args=True)
 
-LIST_HANDLER = DisableAbleCommandHandler(["notes", "saved"], list_notes, admin_ok=True)
+LIST_HANDLER = DisableAbleCommandHandler(["notes", "saved"],
+                                         list_notes,
+                                         admin_ok=True)
 
 dispatcher.add_handler(GET_HANDLER)
 dispatcher.add_handler(SAVE_HANDLER)
